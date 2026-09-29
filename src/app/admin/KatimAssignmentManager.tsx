@@ -11,6 +11,7 @@ interface Tugas {
   variabel: string;
   level: string;
   katimId: string;
+  status: string;
 }
 
 interface Katim {
