@@ -182,7 +182,6 @@ export default function IndicatorManager({ indicators }: { indicators: Indicator
                   onClick={() => setExpandedId(expandedId === ind.id ? null : ind.id)}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="bg-green-100 text-green-800 font-bold px-2 py-1 rounded text-sm">{ind.order}</span>
                     <h3 className="font-bold text-gray-800">{ind.name}</h3>
                     {expandedId === ind.id ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
                   </div>
