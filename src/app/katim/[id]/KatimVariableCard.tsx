@@ -175,22 +175,22 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
   const previewLink = fileData?.linkDrive ? fileData.linkDrive.replace(/\/view\?usp=.*/, '/preview') : '';
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-blue-50/30 border border-blue-100 rounded-lg">
+    <div className="flex flex-col gap-4 p-5 bg-white/60 backdrop-blur-sm border border-gray-100 shadow-sm rounded-2xl transition-all hover:shadow-md hover:bg-white/80">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex-1 text-sm text-gray-700">
-          <span className="font-bold mr-2">{reqIndex + 1}.</span> 
+        <div className="flex-1 text-sm text-gray-700 leading-relaxed">
+          <span className="font-extrabold text-blue-600 mr-2 bg-blue-50 px-2 py-1 rounded-lg">{reqIndex + 1}</span> 
           {reqText}
         </div>
         
         <div className="shrink-0 flex items-center gap-2 justify-end">
           {isSudah ? (
             <>
-              <div className="flex items-center gap-1 text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded">
-                <CheckCircle className="w-3 h-3" /> Diunggah
+              <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-100/80 px-3 py-1.5 rounded-xl shadow-sm border border-emerald-200/50">
+                <CheckCircle className="w-3.5 h-3.5" /> Terunggah
               </div>
               <button 
                 onClick={() => setShowPreview(!showPreview)}
-                className={`p-2 rounded-md transition-colors ${showPreview ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}
+                className={`p-2 rounded-xl transition-all shadow-sm ${showPreview ? 'bg-blue-600 text-white shadow-blue-500/30' : 'bg-white text-blue-600 hover:bg-blue-50 border border-gray-200'}`}
                 title="Lihat"
               >
                 <Eye className="w-4 h-4" />
@@ -198,7 +198,7 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
               <button 
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading || isDeleting}
-                className="p-2 bg-yellow-50 text-yellow-600 hover:bg-yellow-100 rounded-md transition-colors"
+                className="p-2 bg-white border border-gray-200 text-amber-600 hover:bg-amber-50 hover:border-amber-200 rounded-xl transition-all shadow-sm"
                 title="Ganti"
               >
                 {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
@@ -206,7 +206,7 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
               <button 
                 onClick={handleDelete}
                 disabled={isUploading || isDeleting}
-                className="p-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-md transition-colors"
+                className="p-2 bg-white border border-gray-200 text-rose-600 hover:bg-rose-50 hover:border-rose-200 rounded-xl transition-all shadow-sm"
                 title="Hapus"
               >
                  {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
@@ -216,10 +216,10 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
             <button 
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
-              className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+              className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:-translate-y-0.5"
             >
               {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-              Unggah
+              Unggah Dokumen
             </button>
           )}
 
@@ -234,12 +234,14 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
       </div>
 
       {showPreview && fileData && (
-        <div className="mt-2 pt-2 border-t border-blue-100/50">
-          <iframe 
-            src={previewLink} 
-            className="w-full h-[400px] bg-white rounded-lg border border-gray-200"
-            allow="autoplay"
-          ></iframe>
+        <div className="mt-2 pt-4 border-t border-gray-100">
+          <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden shadow-inner">
+            <iframe 
+              src={previewLink} 
+              className="w-full h-[500px]"
+              allow="autoplay"
+            ></iframe>
+          </div>
         </div>
       )}
     </div>
