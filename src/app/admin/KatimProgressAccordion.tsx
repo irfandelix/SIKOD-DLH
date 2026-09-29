@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Eye, ExternalLink } from "lucide-react";
 
 interface UploadedFile {
   linkDrive: string;
@@ -69,43 +69,79 @@ export default function KatimProgressAccordion({ katim, tugasKatim }: { katim: K
       {isOpen && (
         <div className="p-6 bg-white">
           <div className="grid grid-cols-1 gap-4">
-            {tugasKatim.map(t => (
-              <div key={t.id} className={`bg-white/80 backdrop-blur-sm border-l-4 rounded-xl p-4 shadow-sm ${t.status === 'sudah' ? 'border-emerald-500' : 'border-red-400'}`}>
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <span className={`text-xs font-bold px-2 py-1 rounded-lg ${t.status === 'sudah' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                      {t.status === 'sudah' ? 'SUDAH INPUT' : 'BELUM INPUT'}
-                    </span>
+            {tugasKatim.map(t => {
+              const isEmptyAndSudah = t.status === 'sudah' && (!t.uploadedFiles || Object.keys(t.uploadedFiles).length === 0);
+              
+              return (
+                <div key={t.id} className={`bg-white/80 backdrop-blur-sm border-l-4 rounded-xl p-4 shadow-sm ${t.status === 'sudah' ? 'border-emerald-500' : 'border-red-400'}`}>
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <span className={`text-xs font-bold px-2 py-1 rounded-lg ${t.status === 'sudah' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        {t.status === 'sudah' ? 'SUDAH INPUT' : 'BELUM INPUT'}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <h4 className="font-bold text-gray-800 text-base">{t.variabel}</h4>
+                  <p className="text-sm text-gray-500">{t.level}</p>
+
+                  {/* Daftar file terunggah */}
+                  <div className="mt-3 pt-3 border-t border-gray-100 flex flex-col gap-2">
+                    {t.uploadedFiles && Object.keys(t.uploadedFiles).length > 0 ? (
+                      Object.entries(t.uploadedFiles).map(([idx, file]) => (
+                        <FileRow key={idx} idx={idx} file={file} />
+                      ))
+                    ) : isEmptyAndSudah ? (
+                      <p className="text-sm font-semibold text-emerald-600 italic mt-2">✅ Otomatis selesai (Tanpa Dokumen)</p>
+                    ) : (
+                      <p className="text-sm text-gray-400 italic mt-2">Menunggu dokumen...</p>
+                    )}
                   </div>
                 </div>
-                
-                <h4 className="font-bold text-gray-800 text-base">{t.variabel}</h4>
-                <p className="text-sm text-gray-500">{t.level}</p>
-
-                {/* Daftar file terunggah */}
-                <div className="mt-3 pt-3 border-t border-gray-100 flex flex-col gap-2">
-                  {t.uploadedFiles && Object.keys(t.uploadedFiles).length > 0 ? (
-                    Object.entries(t.uploadedFiles).map(([idx, file]) => (
-                      <div key={idx}>
-                        <span className="text-xs text-gray-500 font-medium block mb-1">Tautan Poin {parseInt(idx) + 1}:</span>
-                        <div className="flex items-center bg-gray-50 px-3 py-2 rounded-xl border border-gray-200 w-full max-w-xl">
-                          <input 
-                            type="text" 
-                            readOnly 
-                            value={file.linkDrive} 
-                            className="text-sm text-gray-700 bg-transparent w-full outline-none"
-                            onClick={(e) => e.currentTarget.select()}
-                          />
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-sm text-gray-400 italic mt-2">Menunggu dokumen...</p>
-                  )}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FileRow({ idx, file }: { idx: string, file: UploadedFile }) {
+  const [showPreview, setShowPreview] = useState(false);
+  const previewLink = file.linkDrive ? file.linkDrive.replace(/\/view\?usp=.*/, '/preview') : '';
+
+  return (
+    <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 w-full max-w-2xl flex flex-col gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Poin {parseInt(idx) + 1}</span>
+        
+        <div className="flex gap-2">
+          <button 
+            onClick={() => setShowPreview(!showPreview)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${showPreview ? 'bg-orange-600 text-white' : 'bg-white text-orange-600 border border-orange-200 hover:bg-orange-50'}`}
+          >
+            <Eye className="w-3.5 h-3.5" /> Preview
+          </button>
+          
+          <a 
+            href={file.linkDrive}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-gray-600 border border-gray-200 hover:bg-gray-100 rounded-lg text-xs font-bold transition-all"
+          >
+            <ExternalLink className="w-3.5 h-3.5" /> Buka
+          </a>
+        </div>
+      </div>
+
+      {showPreview && previewLink && (
+        <div className="mt-2 bg-white rounded-lg overflow-hidden border border-gray-200 shadow-inner">
+          <iframe 
+            src={previewLink} 
+            className="w-full h-[400px]"
+            allow="autoplay"
+          ></iframe>
         </div>
       )}
     </div>
