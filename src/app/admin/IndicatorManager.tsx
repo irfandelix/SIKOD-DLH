@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Plus, Loader2, Save, X, Trash2, Edit2, ChevronDown, ChevronUp } from "lucide-react";
 import { db } from "@/lib/firebase/config";
-import { collection, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";`nimport toast from "react-hot-toast";
+import { collection, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import toast from "react-hot-toast";
 
 export interface Indicator {
   id: string;
