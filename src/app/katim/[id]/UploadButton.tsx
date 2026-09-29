@@ -77,7 +77,7 @@ export default function UploadButton({ katimName, variabelName }: UploadButtonPr
             href={fileData.link} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors tooltip"
+            className="p-2 bg-orange-50 text-orange-600 hover:bg-orange-100 rounded-md transition-colors tooltip"
             title="Lihat Dokumen"
           >
             <Eye className="w-4 h-4" />

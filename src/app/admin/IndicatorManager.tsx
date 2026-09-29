@@ -139,7 +139,7 @@ export default function IndicatorManager({ indicators }: { indicators: Indicator
         )}
       </div>
       
-      <div className="bg-blue-50 text-blue-800 p-4 rounded-2xl mb-6 text-sm">
+      <div className="bg-orange-50 text-orange-800 p-4 rounded-2xl mb-6 text-sm">
         <strong>Penting:</strong> Mengubah nama indikator atau syarat level di sini akan otomatis ter-update di seluruh aplikasi.
       </div>
 
@@ -282,7 +282,7 @@ function EditorForm({ formData, setFormData, isSaving, onSave, onCancel, handleR
               </div>
               <button 
                 onClick={() => addRequirement(level)}
-                className="mt-3 text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                className="mt-3 text-xs font-bold text-orange-600 hover:text-orange-800 flex items-center gap-1"
               >
                 <Plus className="w-3 h-3" /> Tambah Syarat
               </button>

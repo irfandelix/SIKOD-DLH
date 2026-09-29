@@ -50,7 +50,7 @@ export default function KatimVariableCard({ katimName, tugas, index, indicator }
   return (
     <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white overflow-hidden flex flex-col transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1">
       {/* Bagian Atas: Info Variabel */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-orange-600 to-amber-600 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className="bg-white/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full border border-white/20">
@@ -178,7 +178,7 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
     <div className="flex flex-col gap-4 p-5 bg-white/60 backdrop-blur-sm border border-gray-100 shadow-sm rounded-2xl transition-all hover:shadow-md hover:bg-white/80">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex-1 text-sm text-gray-700 leading-relaxed">
-          <span className="font-extrabold text-blue-600 mr-2 bg-blue-50 px-2 py-1 rounded-lg">{reqIndex + 1}</span> 
+          <span className="font-extrabold text-orange-600 mr-2 bg-orange-50 px-2 py-1 rounded-lg">{reqIndex + 1}</span> 
           {reqText}
         </div>
         
@@ -190,7 +190,7 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
               </div>
               <button 
                 onClick={() => setShowPreview(!showPreview)}
-                className={`p-2 rounded-xl transition-all shadow-sm ${showPreview ? 'bg-blue-600 text-white shadow-blue-500/30' : 'bg-white text-blue-600 hover:bg-blue-50 border border-gray-200'}`}
+                className={`p-2 rounded-xl transition-all shadow-sm ${showPreview ? 'bg-orange-600 text-white shadow-orange-500/30' : 'bg-white text-orange-600 hover:bg-orange-50 border border-gray-200'}`}
                 title="Lihat"
               >
                 <Eye className="w-4 h-4" />
@@ -216,7 +216,7 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
             <button 
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
-              className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:-translate-y-0.5"
+              className="flex items-center gap-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 disabled:opacity-50 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-orange-500/20 transition-all hover:shadow-lg hover:-translate-y-0.5"
             >
               {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
               Unggah Dokumen

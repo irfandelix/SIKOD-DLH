@@ -26,10 +26,10 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex flex-col font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-orange-50 flex flex-col font-sans relative overflow-hidden">
       {/* Decorative Blur Orbs */}
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 "></div>
-      <div className="absolute top-[20%] right-[-10%] w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30  animation-delay-2000"></div>
+      <div className="absolute top-[20%] right-[-10%] w-96 h-96 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30  animation-delay-2000"></div>
       
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center py-12 px-4 relative z-10">
@@ -43,7 +43,7 @@ export default function Home() {
             </svg>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-700 to-blue-700 tracking-tight mb-4">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-700 to-orange-700 tracking-tight mb-4">
             SIKOD DLH
           </h1>
           <p className="text-gray-500 font-medium mb-10 max-w-lg mx-auto">
@@ -67,7 +67,7 @@ export default function Home() {
                     href={`/katim/${katim.id}`}
                     className="group relative p-5 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-orange-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
                     <div className="flex items-center justify-between z-10 relative">
                       <span className="font-semibold text-gray-800 group-hover:text-green-700 transition-colors">
                         {katim.name}

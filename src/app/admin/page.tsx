@@ -115,7 +115,7 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab("katim")}
             className={`px-5 py-2.5 text-sm font-bold flex items-center gap-2 rounded-xl transition-all duration-300 ${
               activeTab === "katim" 
-                ? "bg-white text-blue-700 shadow-md scale-100" 
+                ? "bg-white text-orange-700 shadow-md scale-100" 
                 : "text-gray-500 hover:text-gray-700 hover:bg-gray-100/50 scale-95 hover:scale-100"
             }`}
           >
@@ -126,7 +126,7 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab("tugas")}
             className={`px-5 py-2.5 text-sm font-bold flex items-center gap-2 rounded-xl transition-all duration-300 ${
               activeTab === "tugas" 
-                ? "bg-white text-blue-700 shadow-md scale-100" 
+                ? "bg-white text-orange-700 shadow-md scale-100" 
                 : "text-gray-500 hover:text-gray-700 hover:bg-gray-100/50 scale-95 hover:scale-100"
             }`}
           >
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab("pantau")}
             className={`px-5 py-2.5 text-sm font-bold flex items-center gap-2 rounded-xl transition-all duration-300 ${
               activeTab === "pantau" 
-                ? "bg-white text-blue-700 shadow-md scale-100" 
+                ? "bg-white text-orange-700 shadow-md scale-100" 
                 : "text-gray-500 hover:text-gray-700 hover:bg-gray-100/50 scale-95 hover:scale-100"
             }`}
           >
@@ -148,7 +148,7 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab("indikator")}
             className={`px-5 py-2.5 text-sm font-bold flex items-center gap-2 rounded-xl transition-all duration-300 ${
               activeTab === "indikator" 
-                ? "bg-white text-blue-700 shadow-md scale-100" 
+                ? "bg-white text-orange-700 shadow-md scale-100" 
                 : "text-gray-500 hover:text-gray-700 hover:bg-gray-100/50 scale-95 hover:scale-100"
             }`}
           >

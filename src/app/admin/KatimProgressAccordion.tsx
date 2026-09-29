@@ -53,12 +53,12 @@ export default function KatimProgressAccordion({ katim, tugasKatim }: { katim: K
         
         {/* Progress Bar di Header */}
         <div className="flex flex-col items-end">
-          <span className={`text-sm font-bold ${progress === 100 ? 'text-green-600' : 'text-blue-600'}`}>
+          <span className={`text-sm font-bold ${progress === 100 ? 'text-green-600' : 'text-orange-600'}`}>
             {progress}% Selesai
           </span>
           <div className="w-32 md:w-48 h-2 bg-gray-200 rounded mt-1 overflow-hidden">
             <div 
-              className={`h-full ${progress === 100 ? 'bg-gradient-to-r from-emerald-400 to-emerald-500' : 'bg-gradient-to-r from-blue-400 to-indigo-500'} transition-all duration-500`} 
+              className={`h-full ${progress === 100 ? 'bg-gradient-to-r from-emerald-400 to-emerald-500' : 'bg-gradient-to-r from-orange-400 to-amber-500'} transition-all duration-500`} 
               style={{ width: `${progress}%` }}
             ></div>
           </div>
