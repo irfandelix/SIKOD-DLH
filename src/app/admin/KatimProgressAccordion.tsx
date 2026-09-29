@@ -33,7 +33,7 @@ export default function KatimProgressAccordion({ katim, tugasKatim }: { katim: K
   const progress = Math.round((sudah / total) * 100);
 
   return (
-    <div className="bg-white border border-gray-200 rounded overflow-hidden mb-4 shadow-sm transition-all">
+    <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden mb-4 shadow-sm transition-all">
       {/* Header Accordion */}
       <div 
         className="bg-gray-50 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-gray-100 transition-colors border-b border-gray-200"
@@ -58,7 +58,7 @@ export default function KatimProgressAccordion({ katim, tugasKatim }: { katim: K
           </span>
           <div className="w-32 md:w-48 h-2 bg-gray-200 rounded mt-1 overflow-hidden">
             <div 
-              className={`h-full ${progress === 100 ? 'bg-green-500' : 'bg-blue-500'} transition-all duration-500`} 
+              className={`h-full ${progress === 100 ? 'bg-gradient-to-r from-emerald-400 to-emerald-500' : 'bg-gradient-to-r from-blue-400 to-indigo-500'} transition-all duration-500`} 
               style={{ width: `${progress}%` }}
             ></div>
           </div>
@@ -70,10 +70,10 @@ export default function KatimProgressAccordion({ katim, tugasKatim }: { katim: K
         <div className="p-6 bg-white">
           <div className="grid grid-cols-1 gap-4">
             {tugasKatim.map(t => (
-              <div key={t.id} className={`bg-white border-l-4 rounded p-4 shadow-sm ${t.status === 'sudah' ? 'border-green-500' : 'border-red-400'}`}>
+              <div key={t.id} className={`bg-white/80 backdrop-blur-sm border-l-4 rounded-xl p-4 shadow-sm ${t.status === 'sudah' ? 'border-emerald-500' : 'border-red-400'}`}>
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <span className={`text-xs font-bold px-2 py-1 rounded ${t.status === 'sudah' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    <span className={`text-xs font-bold px-2 py-1 rounded-lg ${t.status === 'sudah' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                       {t.status === 'sudah' ? 'SUDAH INPUT' : 'BELUM INPUT'}
                     </span>
                   </div>
@@ -88,7 +88,7 @@ export default function KatimProgressAccordion({ katim, tugasKatim }: { katim: K
                     Object.entries(t.uploadedFiles).map(([idx, file]) => (
                       <div key={idx}>
                         <span className="text-xs text-gray-500 font-medium block mb-1">Tautan Poin {parseInt(idx) + 1}:</span>
-                        <div className="flex items-center bg-gray-50 px-3 py-2 rounded border border-gray-200 w-full max-w-xl">
+                        <div className="flex items-center bg-gray-50 px-3 py-2 rounded-xl border border-gray-200 w-full max-w-xl">
                           <input 
                             type="text" 
                             readOnly 
