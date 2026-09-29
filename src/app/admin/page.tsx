@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Users, FileText, CheckCircle, XCircle, ExternalLink, Plus, Loader2, Settings } from "lucide-react";
 import { db } from "@/lib/firebase/config";
+import toast from "react-hot-toast";
 import { collection, onSnapshot, addDoc, deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
 import KatimAssignmentManager from "./KatimAssignmentManager";
 import KatimProgressAccordion from "./KatimProgressAccordion";
