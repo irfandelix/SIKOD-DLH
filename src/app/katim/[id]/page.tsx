@@ -86,7 +86,7 @@ export default function KatimRoom({ params }: { params: Promise<{ id: string }> 
       {/* Decorative Blob */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-300/20 rounded-full mix-blend-multiply filter blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
 
-      <header className="bg-white/70 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-10 shadow-sm">
+      <header className="bg-white/70 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link href="/" className="p-2 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors text-gray-600 border border-gray-200">
