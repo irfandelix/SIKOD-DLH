@@ -87,32 +87,31 @@ export default function KatimRoom({ params }: { params: Promise<{ id: string }> 
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-300/20 rounded-full mix-blend-multiply filter blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
 
       <header className="bg-white/70 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="p-2 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors text-gray-600 border border-gray-200">
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <div>
-              <h1 className="text-lg font-bold text-gray-800 tracking-tight">
-                Ruang Data Dukung
-              </h1>
-              <p className="text-gray-500 text-xs font-medium">
-                {katimName || "Memuat..."}
-              </p>
-            </div>
-          </div>
+        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center gap-4">
+          <Link href="/" className="p-2 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors text-gray-600 border border-gray-200">
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
+          <h1 className="text-lg font-bold text-gray-800 tracking-tight">
+            Ruang Data Dukung
+          </h1>
         </div>
       </header>
 
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-8 relative z-10">
-        <div className="bg-white/80 backdrop-blur border border-white/60 rounded-2xl shadow-lg p-6 mb-8 flex gap-5 items-start">
-          <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-3 rounded-2xl shrink-0 shadow-inner">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        <div className="bg-white/80 backdrop-blur border border-white/60 rounded-3xl shadow-xl shadow-blue-900/5 p-8 mb-8 flex flex-col sm:flex-row gap-6 items-start sm:items-center relative overflow-hidden">
+          {/* Efek dekoratif di dalam banner */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+          
+          <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-4 rounded-2xl shrink-0 shadow-lg shadow-blue-500/30 text-white z-10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
           </div>
-          <div>
-            <h2 className="font-bold text-gray-800 text-xl mb-1">Informasi Pengunggahan</h2>
-            <p className="text-gray-600 leading-relaxed">
-              Berikut adalah daftar indikator (variabel) yang menjadi tanggung jawab Anda. 
+          
+          <div className="z-10">
+            <h2 className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-indigo-800 text-3xl sm:text-4xl mb-3 tracking-tight">
+              Halo, {katimName || "Memuat..."}! 👋
+            </h2>
+            <p className="text-gray-600 leading-relaxed text-sm sm:text-base max-w-3xl">
+              Selamat datang di Ruang Data Dukung. Berikut adalah daftar indikator (variabel) yang menjadi tanggung jawab tim Anda. 
               Silakan unggah dokumen data dukung (berupa file/PDF) yang sesuai dengan level yang diminta. 
             </p>
           </div>
