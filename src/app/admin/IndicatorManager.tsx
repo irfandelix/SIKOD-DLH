@@ -240,7 +240,7 @@ function EditorForm({ formData, setFormData, isSaving, onSave, onCancel, handleR
             type="number" 
             value={formData.order || ""}
             onChange={e => setFormData({...formData, order: parseInt(e.target.value) || 0})}
-            className="border border-gray-300 rounded px-3 py-2 w-20 text-sm focus:ring-2 focus:ring-yellow-400 outline-none"
+            className="border border-gray-300 rounded px-3 py-2 w-20 text-sm text-gray-900 focus:ring-2 focus:ring-yellow-400 outline-none"
           />
         </div>
         <div className="flex-1">
@@ -250,7 +250,7 @@ function EditorForm({ formData, setFormData, isSaving, onSave, onCancel, handleR
             value={formData.name || ""}
             onChange={e => setFormData({...formData, name: e.target.value})}
             placeholder="Contoh: 12. PENGELOLAAN ARSIP"
-            className="border border-gray-300 rounded px-3 py-2 w-full text-sm font-semibold focus:ring-2 focus:ring-yellow-400 outline-none"
+            className="border border-gray-300 rounded px-3 py-2 w-full text-sm font-semibold text-gray-900 focus:ring-2 focus:ring-yellow-400 outline-none"
           />
         </div>
       </div>
@@ -268,7 +268,7 @@ function EditorForm({ formData, setFormData, isSaving, onSave, onCancel, handleR
                       value={r}
                       onChange={(e) => handleRequirementChange(level, i, e.target.value)}
                       placeholder="Masukkan syarat dokumen..."
-                      className="border border-gray-300 rounded px-2 py-1 w-full text-xs min-h-[60px] focus:ring-2 focus:ring-yellow-400 outline-none"
+                      className="border border-gray-300 rounded px-2 py-1 w-full text-xs text-gray-900 min-h-[60px] focus:ring-2 focus:ring-yellow-400 outline-none"
                     />
                     <button 
                       onClick={() => removeRequirement(level, i)}
