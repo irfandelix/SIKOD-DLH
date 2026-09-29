@@ -47,29 +47,34 @@ export default function KatimVariableCard({ katimName, tugas, index, indicator }
   // Tapi untuk saat ini kita sembunyikan saja tombol upload-nya jika tanpa dokumen.
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col gap-4">
+    <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden flex flex-col">
       {/* Bagian Atas: Info Variabel */}
-      <div>
-        <div className="flex items-center gap-3 mb-2">
-          <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">
-            Tugas {index}
-          </span>
-          <span className="bg-gray-100 text-gray-700 text-xs font-bold px-2 py-1 rounded">
-            {tugas.level}
-          </span>
+      <div className="bg-gray-50 border-b border-gray-200 px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="bg-green-700 text-white text-xs font-bold px-2 py-0.5 rounded">
+              #{index}
+            </span>
+            <span className="bg-yellow-100 text-yellow-800 border border-yellow-200 text-xs font-bold px-2 py-0.5 rounded">
+              {tugas.level}
+            </span>
+          </div>
+          <h3 className="font-bold text-gray-800 text-base leading-snug">
+            {tugas.variabel}
+          </h3>
         </div>
-        <h3 className="font-bold text-gray-800 text-lg leading-tight mb-2">
-          {tugas.variabel}
-        </h3>
       </div>
 
       {/* Daftar Point Syarat Dokumen (Masing-masing dengan tombol upload) */}
-      <div className="flex flex-col gap-3 mt-2">
-        <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Daftar Dokumen Yang Harus Diunggah:</span>
+      <div className="p-6 flex flex-col gap-4">
+        <h4 className="text-sm font-bold text-gray-700 flex items-center gap-2 border-b border-gray-200 pb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Daftar Persyaratan Dokumen
+        </h4>
         
         {isTanpaDokumen ? (
-          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 text-center text-gray-500 italic">
-            {reqs[0]}
+          <div className="p-4 bg-gray-50 rounded border border-gray-200 text-center text-gray-500 italic text-sm">
+            {reqs[0]} (Tidak perlu unggah dokumen)
           </div>
         ) : (
           reqs.map((req, reqIndex) => (

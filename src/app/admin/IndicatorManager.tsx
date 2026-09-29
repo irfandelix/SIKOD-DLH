@@ -131,14 +131,14 @@ export default function IndicatorManager({ indicators }: { indicators: Indicator
         {!editingId && (
           <button 
             onClick={handleAddNew}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors justify-center"
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-medium flex items-center gap-2 transition-colors justify-center"
           >
             <Plus className="w-4 h-4" /> Tambah Indikator
           </button>
         )}
       </div>
       
-      <div className="bg-blue-50 text-blue-800 p-4 rounded-lg mb-6 text-sm">
+      <div className="bg-blue-50 text-blue-800 p-4 rounded mb-6 text-sm">
         <strong>Penting:</strong> Mengubah nama indikator atau syarat level di sini akan otomatis ter-update di seluruh aplikasi.
       </div>
 
@@ -157,13 +157,13 @@ export default function IndicatorManager({ indicators }: { indicators: Indicator
         )}
 
         {indicators.length === 0 && !editingId && (
-          <div className="text-center text-gray-500 py-10 border-2 border-dashed border-gray-300 rounded-lg">
+          <div className="text-center text-gray-500 py-10 border-2 border-dashed border-gray-300 rounded">
             Belum ada indikator.
           </div>
         )}
         
         {indicators.map((ind) => (
-          <div key={ind.id} className="border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm">
+          <div key={ind.id} className="border border-gray-200 rounded bg-white overflow-hidden shadow-sm">
             {editingId === ind.id ? (
               <EditorForm 
                 formData={formData as Indicator} 
@@ -293,14 +293,14 @@ function EditorForm({ formData, setFormData, isSaving, onSave, onCancel, handleR
       <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
         <button 
           onClick={onCancel}
-          className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded transition-colors"
         >
           Batal
         </button>
         <button 
           onClick={onSave}
           disabled={isSaving}
-          className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors disabled:bg-gray-400"
+          className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded font-medium flex items-center gap-2 transition-colors disabled:bg-gray-400"
         >
           {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Simpan Perubahan

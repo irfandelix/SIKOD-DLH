@@ -168,7 +168,7 @@ export default function AdminDashboard() {
               <div>
                 <h2 className="text-xl font-bold text-gray-800 mb-6">Daftar Ketua Tim (Katim)</h2>
                 
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mb-8">
+                <div className="bg-white p-6 rounded border border-gray-200 shadow-sm mb-8">
                   <h3 className="font-bold text-gray-700 mb-3">Tambah Katim Baru</h3>
                   <div className="flex gap-2">
                     <input 
@@ -176,9 +176,9 @@ export default function AdminDashboard() {
                       value={newKatimName}
                       onChange={(e) => setNewKatimName(e.target.value)}
                       placeholder="Masukkan nama Katim baru..." 
-                      className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none text-gray-900 bg-white" 
+                      className="flex-1 border border-gray-300 rounded px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none text-gray-900 bg-white" 
                     />
-                    <button onClick={handleAddKatim} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2">
+                    <button onClick={handleAddKatim} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-medium flex items-center gap-2">
                       <Plus className="w-4 h-4" /> Tambah
                     </button>
                   </div>
@@ -187,7 +187,7 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {katims.length === 0 && <p className="text-gray-500 italic">Belum ada data Katim.</p>}
                   {katims.map(k => (
-                    <div key={k.id} className="bg-white border border-gray-200 rounded-lg p-4 flex justify-between items-center shadow-sm">
+                    <div key={k.id} className="bg-white border border-gray-200 rounded p-4 flex justify-between items-center shadow-sm">
                       <span className="font-semibold text-gray-700">{k.name}</span>
                       <button onClick={() => handleDeleteKatim(k.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-full transition-colors" title="Hapus">
                         <XCircle className="w-5 h-5" />
@@ -204,7 +204,7 @@ export default function AdminDashboard() {
                 <h2 className="text-xl font-bold text-gray-800 mb-6">Kelola Penugasan Katim</h2>
                 
                 {katims.length === 0 ? (
-                  <div className="p-8 bg-gray-50 rounded-xl text-center text-gray-500 italic">
+                  <div className="p-8 bg-gray-50 rounded text-center text-gray-500 italic">
                     Belum ada Katim yang didaftarkan. Silakan tambahkan Katim di Tab 1 terlebih dahulu.
                   </div>
                 ) : (
@@ -235,7 +235,7 @@ export default function AdminDashboard() {
                 })}
 
                 {tugas.length === 0 && (
-                  <div className="p-8 bg-white rounded-xl text-center text-gray-500 border border-gray-200">
+                  <div className="p-8 bg-white rounded text-center text-gray-500 border border-gray-200">
                     Belum ada penugasan daya dukung kepada satupun Katim.
                   </div>
                 )}
