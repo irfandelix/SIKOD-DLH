@@ -79,6 +79,7 @@ export default function KatimVariableCard({ katimName, tugas, index, indicator }
               reqIndex={reqIndex} 
               tugas={tugas} 
               katimName={katimName} 
+              totalReqs={reqs.length}
             />
           ))
         )}
@@ -88,7 +89,7 @@ export default function KatimVariableCard({ katimName, tugas, index, indicator }
 }
 
 // Komponen Sub-Baris untuk setiap point
-function RequirementRow({ reqText, reqIndex, tugas, katimName }: { reqText: string, reqIndex: number, tugas: Tugas, katimName: string }) {
+function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { reqText: string, reqIndex: number, tugas: Tugas, katimName: string, totalReqs: number }) {
   const [isUploading, setIsUploading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -119,9 +120,6 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName }: { reqText: stri
           fileId: result.fileId
         };
 
-        // Cek apakah semua reqs sudah terpenuhi
-        const varKey = Object.keys(requirementsMapping).find(k => k.includes(tugas.variabel) || tugas.variabel.includes(k));
-        const totalReqs = varKey ? requirementsMapping[varKey][tugas.level].length : 1;
         const newStatus = Object.keys(updatedFiles).length >= totalReqs ? "sudah" : "belum";
 
         await updateDoc(doc(db, "assignments", tugas.id), {
