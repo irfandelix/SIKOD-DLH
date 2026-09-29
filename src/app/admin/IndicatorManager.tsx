@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Plus, Loader2, Save, X, Trash2, Edit2, ChevronDown, ChevronUp } from "lucide-react";
 import { db } from "@/lib/firebase/config";
-import { collection, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import { collection, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";`nimport toast from "react-hot-toast";
 
 export interface Indicator {
   id: string;
@@ -52,7 +52,7 @@ export default function IndicatorManager({ indicators }: { indicators: Indicator
 
   const handleCancel = () => {
     setEditingId(null);
-    setFormData({});
+    setFormData({}); toast.success("Indikator tersimpan!");
   };
 
   const handleRequirementChange = (level: string, index: number, value: string) => {
@@ -80,7 +80,7 @@ export default function IndicatorManager({ indicators }: { indicators: Indicator
   };
 
   const handleSave = async () => {
-    if (!formData.name) return alert("Nama indikator harus diisi");
+    if (!formData.name) return toast.error("Nama indikator harus diisi");
     
     setIsSaving(true);
     try {
@@ -105,10 +105,10 @@ export default function IndicatorManager({ indicators }: { indicators: Indicator
       }
       
       setEditingId(null);
-      setFormData({});
+      setFormData({}); toast.success("Indikator tersimpan!");
     } catch (error) {
       console.error(error);
-      alert("Gagal menyimpan");
+      toast.error("Gagal menyimpan");
     } finally {
       setIsSaving(false);
     }
@@ -117,10 +117,10 @@ export default function IndicatorManager({ indicators }: { indicators: Indicator
   const handleDelete = async (id: string) => {
     if (!confirm("Yakin ingin menghapus indikator ini? Seluruh tugas terkait akan terpengaruh!")) return;
     try {
-      await deleteDoc(doc(db, "indicators", id));
+      await deleteDoc(doc(db, "indicators", id)); toast.success("Terhapus!");
     } catch (error) {
       console.error(error);
-      alert("Gagal menghapus");
+      toast.error("Gagal menghapus");
     }
   };
 
@@ -131,14 +131,14 @@ export default function IndicatorManager({ indicators }: { indicators: Indicator
         {!editingId && (
           <button 
             onClick={handleAddNew}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-medium flex items-center gap-2 transition-colors justify-center"
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-2xl font-medium flex items-center gap-2 transition-colors justify-center"
           >
             <Plus className="w-4 h-4" /> Tambah Indikator
           </button>
         )}
       </div>
       
-      <div className="bg-blue-50 text-blue-800 p-4 rounded mb-6 text-sm">
+      <div className="bg-blue-50 text-blue-800 p-4 rounded-2xl mb-6 text-sm">
         <strong>Penting:</strong> Mengubah nama indikator atau syarat level di sini akan otomatis ter-update di seluruh aplikasi.
       </div>
 
@@ -157,13 +157,13 @@ export default function IndicatorManager({ indicators }: { indicators: Indicator
         )}
 
         {indicators.length === 0 && !editingId && (
-          <div className="text-center text-gray-500 py-10 border-2 border-dashed border-gray-300 rounded">
+          <div className="text-center text-gray-500 py-10 border-2 border-dashed border-gray-300 rounded-2xl">
             Belum ada indikator.
           </div>
         )}
         
         {indicators.map((ind) => (
-          <div key={ind.id} className="border border-gray-200 rounded bg-white overflow-hidden shadow-sm">
+          <div key={ind.id} className="border border-gray-200 rounded-2xl bg-white overflow-hidden shadow-sm">
             {editingId === ind.id ? (
               <EditorForm 
                 formData={formData as Indicator} 
@@ -188,13 +188,13 @@ export default function IndicatorManager({ indicators }: { indicators: Indicator
                   <div className="flex gap-2 mt-3 sm:mt-0">
                     <button 
                       onClick={(e) => { e.stopPropagation(); handleEdit(ind); }}
-                      className="text-gray-600 hover:text-green-600 font-medium text-sm px-3 py-1 border border-gray-300 rounded bg-white hover:bg-green-50 transition-colors flex items-center gap-1"
+                      className="text-gray-600 hover:text-green-600 font-medium text-sm px-3 py-1 border border-gray-300 rounded-2xl bg-white hover:bg-green-50 transition-colors flex items-center gap-1"
                     >
                       <Edit2 className="w-3 h-3" /> Edit
                     </button>
                     <button 
                       onClick={(e) => { e.stopPropagation(); handleDelete(ind.id); }}
-                      className="text-gray-600 hover:text-red-600 font-medium text-sm px-3 py-1 border border-gray-300 rounded bg-white hover:bg-red-50 transition-colors flex items-center gap-1"
+                      className="text-gray-600 hover:text-red-600 font-medium text-sm px-3 py-1 border border-gray-300 rounded-2xl bg-white hover:bg-red-50 transition-colors flex items-center gap-1"
                     >
                       <Trash2 className="w-3 h-3" />
                     </button>
@@ -206,7 +206,7 @@ export default function IndicatorManager({ indicators }: { indicators: Indicator
                     {['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'].map(level => {
                       const reqs = (ind.levels as any)[level] || [];
                       return (
-                        <div key={level} className="bg-gray-50 p-3 rounded border border-gray-100">
+                        <div key={level} className="bg-gray-50 p-3 rounded-2xl border border-gray-100">
                           <h4 className="font-bold text-xs text-gray-500 uppercase tracking-wider mb-2 border-b pb-1">{level}</h4>
                           <ul className="list-disc list-outside ml-4 text-xs text-gray-700 space-y-1">
                             {reqs.map((r: string, i: number) => (
@@ -239,7 +239,7 @@ function EditorForm({ formData, setFormData, isSaving, onSave, onCancel, handleR
             type="number" 
             value={formData.order || ""}
             onChange={e => setFormData({...formData, order: parseInt(e.target.value) || 0})}
-            className="border border-gray-300 rounded px-3 py-2 w-20 text-sm text-gray-900 focus:ring-2 focus:ring-yellow-400 outline-none"
+            className="border border-gray-300 rounded-2xl px-3 py-2 w-20 text-sm text-gray-900 focus:ring-2 focus:ring-yellow-400 outline-none"
           />
         </div>
         <div className="flex-1">
@@ -249,7 +249,7 @@ function EditorForm({ formData, setFormData, isSaving, onSave, onCancel, handleR
             value={formData.name || ""}
             onChange={e => setFormData({...formData, name: e.target.value})}
             placeholder="Contoh: 12. PENGELOLAAN ARSIP"
-            className="border border-gray-300 rounded px-3 py-2 w-full text-sm font-semibold text-gray-900 focus:ring-2 focus:ring-yellow-400 outline-none"
+            className="border border-gray-300 rounded-2xl px-3 py-2 w-full text-sm font-semibold text-gray-900 focus:ring-2 focus:ring-yellow-400 outline-none"
           />
         </div>
       </div>
@@ -258,7 +258,7 @@ function EditorForm({ formData, setFormData, isSaving, onSave, onCancel, handleR
         {['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'].map(level => {
           const reqs = formData.levels[level] || [];
           return (
-            <div key={level} className="bg-white p-3 rounded border border-gray-200 shadow-sm">
+            <div key={level} className="bg-white p-3 rounded-2xl border border-gray-200 shadow-sm">
               <h4 className="font-bold text-xs text-gray-800 uppercase tracking-wider mb-3 pb-2 border-b border-gray-200">{level}</h4>
               <div className="space-y-2">
                 {reqs.map((r: string, i: number) => (
@@ -267,7 +267,7 @@ function EditorForm({ formData, setFormData, isSaving, onSave, onCancel, handleR
                       value={r}
                       onChange={(e) => handleRequirementChange(level, i, e.target.value)}
                       placeholder="Masukkan syarat dokumen..."
-                      className="border border-gray-300 rounded px-2 py-1 w-full text-xs text-gray-900 min-h-[60px] focus:ring-2 focus:ring-yellow-400 outline-none"
+                      className="border border-gray-300 rounded-2xl px-2 py-1 w-full text-xs text-gray-900 min-h-[60px] focus:ring-2 focus:ring-yellow-400 outline-none"
                     />
                     <button 
                       onClick={() => removeRequirement(level, i)}
@@ -293,14 +293,14 @@ function EditorForm({ formData, setFormData, isSaving, onSave, onCancel, handleR
       <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
         <button 
           onClick={onCancel}
-          className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded transition-colors"
+          className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-2xl transition-colors"
         >
           Batal
         </button>
         <button 
           onClick={onSave}
           disabled={isSaving}
-          className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded font-medium flex items-center gap-2 transition-colors disabled:bg-gray-400"
+          className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-2xl font-medium flex items-center gap-2 transition-colors disabled:bg-gray-400"
         >
           {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Simpan Perubahan

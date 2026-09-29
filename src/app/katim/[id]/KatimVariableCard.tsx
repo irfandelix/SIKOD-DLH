@@ -5,6 +5,7 @@ import { Upload, Loader2, CheckCircle, Eye, Trash2, RefreshCw } from "lucide-rea
 import { uploadToGoogleDrive, deleteFromGoogleDrive } from "@/app/actions/upload";
 import { db } from "@/lib/firebase/config";
 import { doc, updateDoc } from "firebase/firestore";
+import toast from "react-hot-toast";
 
 interface UploadedFile {
   linkDrive: string;
@@ -47,34 +48,34 @@ export default function KatimVariableCard({ katimName, tugas, index, indicator }
   // Tapi untuk saat ini kita sembunyikan saja tombol upload-nya jika tanpa dokumen.
 
   return (
-    <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden flex flex-col">
+    <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white overflow-hidden flex flex-col transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1">
       {/* Bagian Atas: Info Variabel */}
-      <div className="bg-gray-50 border-b border-gray-200 px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="bg-green-700 text-white text-xs font-bold px-2 py-0.5 rounded">
-              #{index}
+          <div className="flex items-center gap-2 mb-2">
+            <span className="bg-white/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full border border-white/20">
+              Tugas {index}
             </span>
-            <span className="bg-yellow-100 text-yellow-800 border border-yellow-200 text-xs font-bold px-2 py-0.5 rounded">
+            <span className="bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-sm">
               {tugas.level}
             </span>
           </div>
-          <h3 className="font-bold text-gray-800 text-base leading-snug">
+          <h3 className="font-extrabold text-white text-lg leading-snug">
             {tugas.variabel}
           </h3>
         </div>
       </div>
 
       {/* Daftar Point Syarat Dokumen (Masing-masing dengan tombol upload) */}
-      <div className="p-6 flex flex-col gap-4">
-        <h4 className="text-sm font-bold text-gray-700 flex items-center gap-2 border-b border-gray-200 pb-2">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      <div className="p-6 md:p-8 flex flex-col gap-4 bg-white/50">
+        <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2 mb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
           Daftar Persyaratan Dokumen
         </h4>
         
         {isTanpaDokumen ? (
-          <div className="p-4 bg-gray-50 rounded border border-gray-200 text-center text-gray-500 italic text-sm">
-            {reqs[0]} (Tidak perlu unggah dokumen)
+          <div className="p-5 bg-green-50 rounded-2xl border border-green-100 text-center text-green-700 italic font-medium shadow-inner">
+            {reqs[0]} (Sistem Otomatis Terselesaikan)
           </div>
         ) : (
           reqs.map((req, reqIndex) => (
@@ -131,11 +132,12 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
           uploadedFiles: updatedFiles,
           status: newStatus
         });
+        toast.success("Dokumen berhasil diunggah!");
       } else {
-        alert("Gagal mengunggah: " + result.error);
+        toast.error("Gagal mengunggah: " + result.error);
       }
     } catch (error) {
-      alert("Terjadi kesalahan saat mengunggah.");
+      toast.error("Terjadi kesalahan saat mengunggah.");
       console.error(error);
     } finally {
       setIsUploading(false);
@@ -159,11 +161,12 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
           status: "belum" // Jika ada yang dihapus, otomatis statusnya belum selesai semua
         });
         setShowPreview(false);
+        toast.success("Dokumen berhasil dihapus!");
       } else {
-        alert("Gagal menghapus file: " + result.error);
+        toast.error("Gagal menghapus file: " + result.error);
       }
     } catch (error) {
-      alert("Terjadi kesalahan saat menghapus.");
+      toast.error("Terjadi kesalahan saat menghapus.");
     } finally {
       setIsDeleting(false);
     }
