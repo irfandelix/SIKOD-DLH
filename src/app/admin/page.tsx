@@ -6,6 +6,7 @@ import { db } from "@/lib/firebase/config";
 import { collection, onSnapshot, addDoc, deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
 import KatimAssignmentManager from "./KatimAssignmentManager";
 import KatimProgressAccordion from "./KatimProgressAccordion";
+import IndicatorManager from "./IndicatorManager";
 
 interface Katim {
   id: string;
@@ -243,57 +244,7 @@ export default function AdminDashboard() {
 
             {/* TAB 4: KELOLA INDIKATOR (CMS) */}
             {activeTab === "indikator" && (
-              <div>
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-800">Manajemen Indikator & Syarat Data Dukung</h2>
-                  <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors">
-                    <Plus className="w-4 h-4" /> Tambah Indikator Baru
-                  </button>
-                </div>
-                
-                <div className="bg-blue-50 text-blue-800 p-4 rounded-lg mb-6 text-sm">
-                  <strong>Penting:</strong> Mengubah nama indikator atau syarat level di sini akan otomatis ter-update di seluruh aplikasi (termasuk di halaman Katim).
-                </div>
-
-                <div className="space-y-4">
-                  {indicators.length === 0 && (
-                    <div className="text-center text-gray-500 py-10 border-2 border-dashed border-gray-300 rounded-lg">
-                      Belum ada indikator.
-                    </div>
-                  )}
-                  {indicators.map((ind, idx) => (
-                    <div key={ind.id} className="border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm">
-                      <div className="bg-gray-50 px-4 py-3 flex justify-between items-center border-b border-gray-200">
-                        <div className="flex items-center gap-3">
-                          <span className="bg-green-100 text-green-800 font-bold px-2 py-1 rounded text-sm">{ind.order}</span>
-                          <h3 className="font-bold text-gray-800">{ind.name}</h3>
-                        </div>
-                        <button className="text-gray-500 hover:text-green-600 font-medium text-sm px-3 py-1 border border-gray-300 rounded bg-white transition-colors">
-                          Edit
-                        </button>
-                      </div>
-                      
-                      <div className="p-4 grid grid-cols-1 md:grid-cols-5 gap-4">
-                        {['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'].map(level => {
-                          // @ts-ignore
-                          const reqs = ind.levels[level] || [];
-                          return (
-                            <div key={level} className="bg-gray-50 p-3 rounded border border-gray-100">
-                              <h4 className="font-bold text-xs text-gray-500 uppercase tracking-wider mb-2 border-b pb-1">{level}</h4>
-                              <ul className="list-disc list-outside ml-4 text-xs text-gray-700 space-y-1">
-                                {reqs.map((r: string, i: number) => (
-                                  <li key={i}>{r}</li>
-                                ))}
-                                {reqs.length === 0 && <span className="text-gray-400 italic">Tidak ada syarat</span>}
-                              </ul>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <IndicatorManager indicators={indicators} />
             )}
           </>
         )}
