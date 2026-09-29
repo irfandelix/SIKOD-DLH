@@ -232,7 +232,7 @@ export default function AdminDashboard() {
                        return numA - numB;
                     });
                   
-                  return <KatimProgressAccordion key={katim.id} katim={katim} tugasKatim={tugasKatim} />;
+                  return <KatimProgressAccordion key={katim.id} katim={katim} tugasKatim={tugasKatim} indicators={indicators} />;
                 })}
 
                 {tugas.length === 0 && (

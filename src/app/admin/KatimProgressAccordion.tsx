@@ -22,14 +22,35 @@ interface Katim {
   name: string;
 }
 
-export default function KatimProgressAccordion({ katim, tugasKatim }: { katim: Katim, tugasKatim: Tugas[] }) {
+interface Indicator {
+  id: string;
+  name: string;
+  order: number;
+  levels?: Record<string, string[]>;
+}
+
+export default function KatimProgressAccordion({ katim, tugasKatim, indicators }: { katim: Katim, tugasKatim: Tugas[], indicators: Indicator[] }) {
   const [isOpen, setIsOpen] = useState(false);
 
   if (tugasKatim.length === 0) return null;
 
+  const dynamicTugasKatim = tugasKatim.map(t => {
+    let isTanpaDokumen = false;
+    const ind = indicators?.find(i => i.name === t.variabel);
+    if (ind && ind.levels && ind.levels[t.level]) {
+      const reqs = ind.levels[t.level];
+      isTanpaDokumen = reqs.length === 1 && reqs[0].toLowerCase().includes("tanpa dokumen");
+    }
+    return {
+      ...t,
+      status: isTanpaDokumen ? "sudah" as const : t.status,
+      isTanpaDokumen
+    };
+  });
+
   // Hitung statistik
-  const total = tugasKatim.length;
-  const sudah = tugasKatim.filter(t => t.status === "sudah").length;
+  const total = dynamicTugasKatim.length;
+  const sudah = dynamicTugasKatim.filter(t => t.status === "sudah").length;
   const progress = Math.round((sudah / total) * 100);
 
   return (
@@ -69,7 +90,7 @@ export default function KatimProgressAccordion({ katim, tugasKatim }: { katim: K
       {isOpen && (
         <div className="p-6 bg-white">
           <div className="grid grid-cols-1 gap-4">
-            {tugasKatim.map(t => {
+            {dynamicTugasKatim.map(t => {
               const isEmptyAndSudah = t.status === 'sudah' && (!t.uploadedFiles || Object.keys(t.uploadedFiles).length === 0);
               
               return (
@@ -112,7 +133,7 @@ function FileRow({ idx, file }: { idx: string, file: UploadedFile }) {
   const previewLink = file.linkDrive ? file.linkDrive.replace(/\/view\?usp=.*/, '/preview') : '';
 
   return (
-    <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 w-full max-w-2xl flex flex-col gap-2">
+    <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 w-full flex flex-col gap-2">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Poin {parseInt(idx) + 1}</span>
         
