@@ -109,14 +109,14 @@ export default function AdminDashboard() {
     <div className="w-full relative z-10">
       <div className="w-full relative z-10">
         
-        {/* Chrome-like Tabs */}
-        <div className="flex gap-1 flex-wrap border-b border-gray-300">
+        {/* Modern Tabs */}
+        <div className="flex gap-2 flex-wrap mb-8 p-2 bg-gray-200/50 backdrop-blur-md rounded-2xl w-fit border border-white/40 shadow-sm mx-auto sm:mx-0">
           <button 
             onClick={() => setActiveTab("katim")}
-            className={`px-6 py-3 text-sm font-semibold flex items-center gap-2 rounded-2xl-t-lg border-t border-x transition-all ${
+            className={`px-5 py-2.5 text-sm font-bold flex items-center gap-2 rounded-xl transition-all duration-300 ${
               activeTab === "katim" 
-                ? "bg-white text-green-700 border-gray-300 border-b-white relative top-[1px] shadow-[0_-2px_4px_rgba(0,0,0,0.02)] z-10" 
-                : "bg-gray-100 text-gray-600 border-transparent hover:bg-gray-200 border-b-gray-300"
+                ? "bg-white text-blue-700 shadow-md scale-100" 
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-100/50 scale-95 hover:scale-100"
             }`}
           >
             <Users className="w-4 h-4" /> Kelola Katim
@@ -124,10 +124,10 @@ export default function AdminDashboard() {
           
           <button 
             onClick={() => setActiveTab("tugas")}
-            className={`px-6 py-3 text-sm font-semibold flex items-center gap-2 rounded-2xl-t-lg border-t border-x transition-all ${
+            className={`px-5 py-2.5 text-sm font-bold flex items-center gap-2 rounded-xl transition-all duration-300 ${
               activeTab === "tugas" 
-                ? "bg-white text-green-700 border-gray-300 border-b-white relative top-[1px] shadow-[0_-2px_4px_rgba(0,0,0,0.02)] z-10" 
-                : "bg-gray-100 text-gray-600 border-transparent hover:bg-gray-200 border-b-gray-300"
+                ? "bg-white text-blue-700 shadow-md scale-100" 
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-100/50 scale-95 hover:scale-100"
             }`}
           >
             <FileText className="w-4 h-4" /> Bagi Tugas
@@ -135,10 +135,10 @@ export default function AdminDashboard() {
           
           <button 
             onClick={() => setActiveTab("pantau")}
-            className={`px-6 py-3 text-sm font-semibold flex items-center gap-2 rounded-2xl-t-lg border-t border-x transition-all ${
+            className={`px-5 py-2.5 text-sm font-bold flex items-center gap-2 rounded-xl transition-all duration-300 ${
               activeTab === "pantau" 
-                ? "bg-white text-green-700 border-gray-300 border-b-white relative top-[1px] shadow-[0_-2px_4px_rgba(0,0,0,0.02)] z-10" 
-                : "bg-gray-100 text-gray-600 border-transparent hover:bg-gray-200 border-b-gray-300"
+                ? "bg-white text-blue-700 shadow-md scale-100" 
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-100/50 scale-95 hover:scale-100"
             }`}
           >
             <CheckCircle className="w-4 h-4" /> Pantau Progres
@@ -146,10 +146,10 @@ export default function AdminDashboard() {
           
           <button 
             onClick={() => setActiveTab("indikator")}
-            className={`px-6 py-3 text-sm font-semibold flex items-center gap-2 rounded-2xl-t-lg border-t border-x transition-all ${
+            className={`px-5 py-2.5 text-sm font-bold flex items-center gap-2 rounded-xl transition-all duration-300 ${
               activeTab === "indikator" 
-                ? "bg-white text-green-700 border-gray-300 border-b-white relative top-[1px] shadow-[0_-2px_4px_rgba(0,0,0,0.02)] z-10" 
-                : "bg-gray-100 text-gray-600 border-transparent hover:bg-gray-200 border-b-gray-300"
+                ? "bg-white text-blue-700 shadow-md scale-100" 
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-100/50 scale-95 hover:scale-100"
             }`}
           >
             <Settings className="w-4 h-4" /> Kelola Indikator
@@ -157,7 +157,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Main Content Area */}
-        <main className="bg-white border border-gray-300 rounded-2xl-b-xl rounded-2xl-tr-xl shadow-sm p-6 md:p-8 relative z-0 min-h-[60vh]">
+        <main className="bg-white/80 backdrop-blur-md border border-white/60 rounded-3xl shadow-xl shadow-gray-200/50 p-6 md:p-8 relative z-0 min-h-[60vh]">
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
             <Loader2 className="w-10 h-10 animate-spin text-green-600" />
