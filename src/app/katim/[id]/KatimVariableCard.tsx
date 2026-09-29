@@ -5,7 +5,6 @@ import { Upload, Loader2, CheckCircle, Eye, Trash2, RefreshCw } from "lucide-rea
 import { uploadToGoogleDrive, deleteFromGoogleDrive } from "@/app/actions/upload";
 import { db } from "@/lib/firebase/config";
 import { doc, updateDoc } from "firebase/firestore";
-import { requirementsMapping } from "@/lib/requirements";
 
 interface UploadedFile {
   linkDrive: string;
@@ -21,18 +20,25 @@ interface Tugas {
   uploadedFiles?: Record<number, UploadedFile>;
 }
 
+export interface Indicator {
+  id: string;
+  name: string;
+  order: number;
+  levels: Record<string, string[]>;
+}
+
 interface KatimVariableCardProps {
   katimName: string;
   tugas: Tugas;
   index: number;
+  indicator?: Indicator;
 }
 
-export default function KatimVariableCard({ katimName, tugas, index }: KatimVariableCardProps) {
-  // Dapatkan array syarat dokumen
+export default function KatimVariableCard({ katimName, tugas, index, indicator }: KatimVariableCardProps) {
+  // Dapatkan array syarat dokumen dari Firestore
   let reqs: string[] = [];
-  const varKey = Object.keys(requirementsMapping).find(k => k.includes(tugas.variabel) || tugas.variabel.includes(k));
-  if (varKey && requirementsMapping[varKey][tugas.level]) {
-    reqs = requirementsMapping[varKey][tugas.level];
+  if (indicator && indicator.levels && indicator.levels[tugas.level]) {
+    reqs = indicator.levels[tugas.level];
   }
 
   const isTanpaDokumen = reqs.length === 1 && reqs[0].toLowerCase().includes("tanpa dokumen");

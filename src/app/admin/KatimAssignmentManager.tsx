@@ -17,21 +17,13 @@ interface Katim {
   name: string;
 }
 
-const variabelOptions = [
-  "1. PERENCANAAN PEMBANGUNAN DAERAH",
-  "2. MONITORING DAN PENGENDALIAN PELAKSANAAN TUGAS",
-  "3. PENJAMINAN MUTU LAYANAN PERANGKAT DAERAH",
-  "4. STANDAR OPERASIONAL PROSEDUR (SOP) PELAYANAN",
-  "5. PENDIDIKAN DAN PELATIHAN APARATUR",
-  "6. ANALISIS KEBIJAKAN DAN PEMECAHAN MASALAH",
-  "7. MANAJEMEN SUMBER DAYA YANG TERUKUR",
-  "8. MANAJEMEN RESIKO PELAKSANAAN TUGAS APARATUR",
-  "9. PENGUKURAN KINERJA PERANGKAT DAERAH",
-  "10. PENGEMBANGAN INOVASI PELAYANAN",
-  "11. BUDAYA ORGANISASI PERANGKAT DAERAH"
-];
+interface Indicator {
+  id: string;
+  name: string;
+  order: number;
+}
 
-export default function KatimAssignmentManager({ katim, allTugas }: { katim: Katim, allTugas: Tugas[] }) {
+export default function KatimAssignmentManager({ katim, allTugas, indicators }: { katim: Katim, allTugas: Tugas[], indicators: Indicator[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const [assignments, setAssignments] = useState<Record<string, {checked: boolean, level: string}>>({});
   const [isSaving, setIsSaving] = useState(false);
@@ -42,7 +34,8 @@ export default function KatimAssignmentManager({ katim, allTugas }: { katim: Kat
   useEffect(() => {
     // Sinkronisasi state lokal dengan data dari Firestore (allTugas)
     const newAssignments: Record<string, {checked: boolean, level: string}> = {};
-    variabelOptions.forEach(v => {
+    indicators.forEach(ind => {
+      const v = ind.name;
       const found = existingTugas.find(t => t.variabel === v);
       if (found) {
         newAssignments[v] = { checked: true, level: found.level };
@@ -51,13 +44,14 @@ export default function KatimAssignmentManager({ katim, allTugas }: { katim: Kat
       }
     });
     setAssignments(newAssignments);
-  }, [allTugas, katim.id]);
+  }, [allTugas, katim.id, indicators]);
 
   const handleSave = async (e: React.MouseEvent) => {
     e.stopPropagation(); // Mencegah accordion tertutup saat menekan tombol simpan
     setIsSaving(true);
     try {
-      for (const v of variabelOptions) {
+      for (const ind of indicators) {
+        const v = ind.name;
         const assignment = assignments[v];
         const existing = existingTugas.find(t => t.variabel === v);
 
@@ -130,7 +124,8 @@ export default function KatimAssignmentManager({ katim, allTugas }: { katim: Kat
       {isOpen && (
         <div className="p-6 bg-white">
           <div className="space-y-3">
-            {variabelOptions.map((v, i) => {
+            {indicators.map((ind, i) => {
+              const v = ind.name;
               const isChecked = assignments[v]?.checked || false;
               const level = assignments[v]?.level || "Level 1";
               

@@ -21,11 +21,24 @@ interface Tugas {
   uploadedFiles?: Record<number, UploadedFile>;
 }
 
+export interface Indicator {
+  id: string;
+  name: string;
+  order: number;
+  levels: {
+    "Level 1": string[];
+    "Level 2": string[];
+    "Level 3": string[];
+    "Level 4": string[];
+    "Level 5": string[];
+  };
+}
+
 export default function KatimRoom({ params }: { params: Promise<{ id: string }> }) {
-  // Gunakan React.use() untuk unwrap params di Client Component
   const { id } = use(params);
   
   const [tugasList, setTugasList] = useState<Tugas[]>([]);
+  const [indicators, setIndicators] = useState<Indicator[]>([]);
   const [katimName, setKatimName] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
@@ -39,7 +52,7 @@ export default function KatimRoom({ params }: { params: Promise<{ id: string }> 
 
     // Dengarkan perubahan tugas khusus untuk Katim ini secara real-time
     const q = query(collection(db, "assignments"), where("katimId", "==", id));
-    const unsub = onSnapshot(q, (snapshot) => {
+    const unsubTugas = onSnapshot(q, (snapshot) => {
       const data: Tugas[] = [];
       snapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() } as Tugas));
       
@@ -54,7 +67,17 @@ export default function KatimRoom({ params }: { params: Promise<{ id: string }> 
       setLoading(false);
     });
 
-    return () => unsub();
+    // Ambil indikator dari Firestore
+    const unsubIndicators = onSnapshot(collection(db, "indicators"), (snapshot) => {
+      const data: Indicator[] = [];
+      snapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() } as Indicator));
+      setIndicators(data);
+    });
+
+    return () => {
+      unsubTugas();
+      unsubIndicators();
+    };
   }, [id]);
 
   return (
@@ -90,14 +113,19 @@ export default function KatimRoom({ params }: { params: Promise<{ id: string }> 
           </div>
         ) : (
           <div className="space-y-4">
-            {tugasList.map((tugas, index) => (
-              <KatimVariableCard 
-                key={tugas.id} 
-                katimName={katimName || id} 
-                tugas={tugas} 
-                index={index + 1}
-              />
-            ))}
+            {tugasList.map((tugas, index) => {
+              const indicator = indicators.find(ind => ind.name === tugas.variabel);
+              
+              return (
+                <KatimVariableCard 
+                  key={tugas.id} 
+                  katimName={katimName || id} 
+                  tugas={tugas} 
+                  index={index + 1}
+                  indicator={indicator}
+                />
+              );
+            })}
           </div>
         )}
       </main>
