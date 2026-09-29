@@ -22,6 +22,7 @@ interface Indicator {
   id: string;
   name: string;
   order: number;
+  levels?: Record<string, string[]>;
 }
 
 export default function KatimAssignmentManager({ katim, allTugas, indicators }: { katim: Katim, allTugas: Tugas[], indicators: Indicator[] }) {
@@ -57,16 +58,33 @@ export default function KatimAssignmentManager({ katim, allTugas, indicators }: 
         const existing = existingTugas.find(t => t.variabel === v);
 
         if (assignment?.checked) {
+          // Cek apakah level ini "tanpa dokumen"
+          let isTanpaDokumen = false;
+          if (ind.levels && ind.levels[assignment.level]) {
+            const reqs = ind.levels[assignment.level];
+            isTanpaDokumen = reqs.length === 1 && reqs[0].toLowerCase().includes("tanpa dokumen");
+          }
+          
+          const targetStatus = isTanpaDokumen ? "sudah" : "belum";
+
           if (existing) {
             if (existing.level !== assignment.level) {
-              await updateDoc(doc(db, "assignments", existing.id), { level: assignment.level });
+              // Jika level berubah, perbarui level dan statusnya
+              await updateDoc(doc(db, "assignments", existing.id), { 
+                level: assignment.level,
+                status: targetStatus,
+                uploadedFiles: {} // reset file jika level berubah
+              });
+            } else if (isTanpaDokumen && existing.status !== "sudah") {
+              // Jika level sama tapi ternyata itu tanpa dokumen dan status belum diubah
+              await updateDoc(doc(db, "assignments", existing.id), { status: "sudah" });
             }
           } else {
             await addDoc(collection(db, "assignments"), {
               variabel: v,
               katimId: katim.id,
               level: assignment.level,
-              status: "belum",
+              status: targetStatus,
               uploadedFiles: {}
             });
           }
