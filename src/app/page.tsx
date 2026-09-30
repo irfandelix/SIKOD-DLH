@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase/config";
 import { collection, onSnapshot } from "firebase/firestore";
-import { Loader2 } from "lucide-react";
+import { Loader2, LayoutDashboard } from "lucide-react";
 
 interface Katim {
   id: string;
@@ -35,12 +35,8 @@ export default function Home() {
       <main className="flex-1 flex flex-col items-center justify-center py-12 px-4 relative z-10">
         <div className="w-full max-w-4xl bg-white/80 backdrop-blur-xl border border-white/40 rounded-3xl shadow-2xl p-8 md:p-12 text-center transition-all">
           
-          <div className="inline-flex items-center justify-center p-4 bg-green-500 rounded-2xl shadow-lg shadow-green-500/30 mb-8">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.3 1.5 1.5 2.5"></path>
-              <path d="M9 18h6"></path>
-              <path d="M10 22h4"></path>
-            </svg>
+          <div className="inline-flex items-center justify-center p-4 bg-gradient-to-br from-green-500 to-orange-600 rounded-2xl shadow-lg shadow-orange-500/30 mb-8">
+            <LayoutDashboard className="w-10 h-10 text-white" />
           </div>
 
           <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-700 to-orange-700 tracking-tight mb-4">
