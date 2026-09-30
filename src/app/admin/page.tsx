@@ -171,7 +171,7 @@ export default function AdminDashboard() {
                 
                 <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm mb-8">
                   <h3 className="font-bold text-gray-700 mb-3">Tambah Katim Baru</h3>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <input 
                       type="text" 
                       value={newKatimName}
@@ -179,7 +179,7 @@ export default function AdminDashboard() {
                       placeholder="Masukkan nama Katim baru..." 
                       className="flex-1 border border-gray-300 rounded-2xl px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none text-gray-900 bg-white" 
                     />
-                    <button onClick={handleAddKatim} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-2xl font-medium flex items-center gap-2">
+                    <button onClick={handleAddKatim} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-2xl font-medium flex items-center justify-center gap-2">
                       <Plus className="w-4 h-4" /> Tambah
                     </button>
                   </div>
@@ -190,7 +190,7 @@ export default function AdminDashboard() {
                   {katims.map(k => (
                     <div key={k.id} className="bg-white border border-gray-200 rounded-2xl p-4 flex justify-between items-center shadow-sm">
                       <span className="font-semibold text-gray-700">{k.name}</span>
-                      <button onClick={() => handleDeleteKatim(k.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-2xl-full transition-colors" title="Hapus">
+                      <button onClick={() => handleDeleteKatim(k.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-full transition-colors" title="Hapus">
                         <XCircle className="w-5 h-5" />
                       </button>
                     </div>
