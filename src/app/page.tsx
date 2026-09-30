@@ -65,7 +65,7 @@ export default function Home() {
                   <Link
                     key={katim.id}
                     href={`/katim/${katim.id}`}
-                    className="group relative p-5 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                    className="group relative p-5 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-xl  transition-all duration-300 overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-orange-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
                     <div className="flex items-center justify-between z-10 relative">

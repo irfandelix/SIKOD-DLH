@@ -48,7 +48,7 @@ export default function KatimVariableCard({ katimName, tugas, index, indicator }
   // Tapi untuk saat ini kita sembunyikan saja tombol upload-nya jika tanpa dokumen.
 
   return (
-    <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white overflow-hidden flex flex-col transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1">
+    <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white overflow-hidden flex flex-col transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] ">
       {/* Bagian Atas: Info Variabel */}
       <div className="bg-gradient-to-r from-orange-600 to-amber-600 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -216,7 +216,7 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
             <button 
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
-              className="flex items-center gap-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 disabled:opacity-50 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-orange-500/20 transition-all hover:shadow-lg hover:-translate-y-0.5"
+              className="flex items-center gap-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 disabled:opacity-50 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-orange-500/20 transition-all hover:shadow-lg "
             >
               {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
               Unggah Dokumen
