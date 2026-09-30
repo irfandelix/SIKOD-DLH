@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { Upload, Loader2, CheckCircle, Eye, Trash2, RefreshCw } from "lucide-react";
-import { uploadToGoogleDrive, deleteFromGoogleDrive } from "@/app/actions/upload";
+import { getUploadSessionUrl, makeFilePublicAndGetLink, deleteFromGoogleDrive } from "@/app/actions/upload";
 import { db } from "@/lib/firebase/config";
 import { doc, updateDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
@@ -112,32 +112,53 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
     setShowPreview(false);
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("katimName", katimName);
-      formData.append("variabelName", tugas.variabel);
-
-      const result = await uploadToGoogleDrive(formData);
-
-      if (result.success && result.webViewLink && result.fileId) {
-        const updatedFiles = { ...(tugas.uploadedFiles || {}) };
-        updatedFiles[reqIndex] = {
-          linkDrive: result.webViewLink,
-          fileId: result.fileId
-        };
-
-        const newStatus = Object.keys(updatedFiles).length >= totalReqs ? "sudah" : "belum";
-
-        await updateDoc(doc(db, "assignments", tugas.id), {
-          uploadedFiles: updatedFiles,
-          status: newStatus
-        });
-        toast.success("Dokumen berhasil diunggah!");
-      } else {
-        toast.error("Gagal mengunggah: " + result.error);
+      // 1. Minta Resumable Upload URL dari Server
+      const sessionResult = await getUploadSessionUrl(katimName, tugas.variabel, file.name, file.type, file.size);
+      if (!sessionResult.success || !sessionResult.uploadUrl) {
+        throw new Error(sessionResult.error || "Gagal mendapatkan sesi upload");
       }
-    } catch (error) {
-      toast.error("Terjadi kesalahan saat mengunggah.");
+
+      // 2. Lempar file LANGSUNG ke Google Drive dari browser (Bypass Vercel limits)
+      const putResponse = await fetch(sessionResult.uploadUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': file.type,
+        },
+        body: file
+      });
+
+      if (!putResponse.ok) {
+        throw new Error("Gagal mengunggah file langsung ke Google Drive");
+      }
+
+      const putData = await putResponse.json();
+      const fileId = putData.id;
+
+      if (!fileId) throw new Error("ID File tidak ditemukan dari Google Drive");
+
+      // 3. Beri Akses Publik dan Ambil Link Web View
+      const publicResult = await makeFilePublicAndGetLink(fileId);
+      if (!publicResult.success || !publicResult.webViewLink) {
+        throw new Error(publicResult.error || "Gagal mengatur privasi file");
+      }
+
+      // 4. Update Database
+      const updatedFiles = { ...(tugas.uploadedFiles || {}) };
+      updatedFiles[reqIndex] = {
+        linkDrive: publicResult.webViewLink,
+        fileId: fileId
+      };
+
+      const newStatus = Object.keys(updatedFiles).length >= totalReqs ? "sudah" : "belum";
+
+      await updateDoc(doc(db, "assignments", tugas.id), {
+        uploadedFiles: updatedFiles,
+        status: newStatus
+      });
+      toast.success("Dokumen berhasil diunggah!");
+      
+    } catch (error: any) {
+      toast.error("Terjadi kesalahan: " + error.message);
       console.error(error);
     } finally {
       setIsUploading(false);

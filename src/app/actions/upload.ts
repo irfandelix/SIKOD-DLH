@@ -1,6 +1,6 @@
 "use server";
 
-import { getDriveService } from '@/lib/google-drive';
+import { getDriveService, getAuthClient } from '@/lib/google-drive';
 import { Readable } from 'stream';
 
 export async function uploadToGoogleDrive(formData: FormData) {
@@ -157,5 +157,102 @@ export async function deleteFromGoogleDrive(fileId: string) {
   } catch (error: any) {
     console.error("Error deleting file:", error);
     return { success: false, error: error.message };
+  }
+}
+export async function getUploadSessionUrl(katimName: string, variabelName: string, fileName: string, mimeType: string, fileSize: number) {
+  try {
+    const drive = getDriveService();
+    const rootFolderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+    
+    // 1. Tahun
+    const currentYear = new Date().getFullYear().toString();
+    let yearFolderId = "";
+    const query = \'\' in parents and name='\' and mimeType='application/vnd.google-apps.folder' and trashed=false\;
+    const res = await drive.files.list({ q: query, spaces: 'drive', fields: 'files(id, name)' });
+    if (res.data.files && res.data.files.length > 0) {
+      yearFolderId = res.data.files[0].id!;
+    } else {
+      const folderRes = await drive.files.create({
+        requestBody: { name: currentYear, mimeType: 'application/vnd.google-apps.folder', parents: [rootFolderId!] },
+        fields: 'id'
+      });
+      yearFolderId = folderRes.data.id!;
+    }
+
+    // 2. Variabel
+    let indicatorFolderId = "";
+    const safeVariabelName = variabelName.replace(/['"]/g, '');
+    const indicatorQuery = \'\' in parents and name='\' and mimeType='application/vnd.google-apps.folder' and trashed=false\;
+    const indicatorRes = await drive.files.list({ q: indicatorQuery, spaces: 'drive', fields: 'files(id, name)' });
+    if (indicatorRes.data.files && indicatorRes.data.files.length > 0) {
+      indicatorFolderId = indicatorRes.data.files[0].id!;
+    } else {
+      const indicatorFolderRes = await drive.files.create({
+        requestBody: { name: safeVariabelName, mimeType: 'application/vnd.google-apps.folder', parents: [yearFolderId] },
+        fields: 'id'
+      });
+      indicatorFolderId = indicatorFolderRes.data.id!;
+    }
+
+    // 3. Katim
+    let katimFolderId = "";
+    const safeKatimName = katimName.replace(/['"]/g, '');
+    const katimQuery = \'\' in parents and name='\' and mimeType='application/vnd.google-apps.folder' and trashed=false\;
+    const katimRes = await drive.files.list({ q: katimQuery, spaces: 'drive', fields: 'files(id, name)' });
+    if (katimRes.data.files && katimRes.data.files.length > 0) {
+      katimFolderId = katimRes.data.files[0].id!;
+    } else {
+      const katimFolderRes = await drive.files.create({
+        requestBody: { name: safeKatimName, mimeType: 'application/vnd.google-apps.folder', parents: [indicatorFolderId] },
+        fields: 'id'
+      });
+      katimFolderId = katimFolderRes.data.id!;
+    }
+
+    // 4. Bikin Resumable Session
+    const fileMetadata = { name: fileName, parents: [katimFolderId] };
+    const auth = getAuthClient();
+    const tokenRes = await auth.getAccessToken();
+    const token = tokenRes.token;
+
+    const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable', {
+      method: 'POST',
+      headers: {
+        'Authorization': \Bearer \\,
+        'Content-Type': 'application/json',
+        'X-Upload-Content-Type': mimeType,
+        'X-Upload-Content-Length': fileSize.toString()
+      },
+      body: JSON.stringify(fileMetadata)
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(\Failed to create upload session: \ - \\);
+    }
+
+    const uploadUrl = response.headers.get('Location');
+    return { success: true, uploadUrl };
+
+  } catch (error: any) {
+    console.error("Error getUploadSessionUrl:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function makeFilePublicAndGetLink(fileId: string) {
+  try {
+    const drive = getDriveService();
+    await drive.permissions.create({
+      fileId: fileId,
+      requestBody: { role: 'reader', type: 'anyone' },
+    });
+    const fileRes = await drive.files.get({
+      fileId: fileId,
+      fields: 'webViewLink'
+    });
+    return { success: true, webViewLink: fileRes.data.webViewLink };
+  } catch(e: any) {
+    return { success: false, error: e.message };
   }
 }
