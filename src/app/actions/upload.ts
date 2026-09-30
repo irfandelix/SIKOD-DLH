@@ -124,6 +124,18 @@ export async function uploadToGoogleDrive(formData: FormData) {
       fields: 'id, webViewLink',
     });
 
+    // 8. Berikan akses publik (Siapa saja yang memiliki link dapat melihat)
+    // Hal ini penting agar iframe preview di Vercel/Production tidak meminta login
+    if (uploadRes.data.id) {
+      await drive.permissions.create({
+        fileId: uploadRes.data.id,
+        requestBody: {
+          role: 'reader',
+          type: 'anyone',
+        },
+      });
+    }
+
     return {
       success: true,
       fileId: uploadRes.data.id,
