@@ -133,11 +133,22 @@ function FileRow({ idx, file }: { idx: string, file: UploadedFile }) {
   const previewLink = file.linkDrive ? file.linkDrive.replace(/\/view\?usp=.*/, '/preview') : '';
 
   return (
-    <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 w-full flex flex-col gap-2">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Poin {parseInt(idx) + 1}</span>
+    <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 w-full flex flex-col gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <span className="text-xs text-gray-500 font-bold uppercase tracking-wider whitespace-nowrap">Poin {parseInt(idx) + 1}</span>
         
-        <div className="flex gap-2">
+        <div className="flex-1 flex items-center bg-white px-3 py-1.5 rounded-lg border border-gray-200 w-full mx-0 sm:mx-4">
+          <input 
+            type="text" 
+            readOnly 
+            value={file.linkDrive} 
+            className="text-xs text-gray-500 bg-transparent w-full outline-none"
+            onClick={(e) => e.currentTarget.select()}
+            title="Klik untuk menyalin"
+          />
+        </div>
+
+        <div className="flex gap-2 shrink-0">
           <button 
             onClick={() => setShowPreview(!showPreview)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${showPreview ? 'bg-orange-600 text-white' : 'bg-white text-orange-600 border border-orange-200 hover:bg-orange-50'}`}
@@ -157,7 +168,7 @@ function FileRow({ idx, file }: { idx: string, file: UploadedFile }) {
       </div>
 
       {showPreview && previewLink && (
-        <div className="mt-2 bg-white rounded-lg overflow-hidden border border-gray-200 shadow-inner">
+        <div className="mt-1 bg-white rounded-lg overflow-hidden border border-gray-200 shadow-inner">
           <iframe 
             src={previewLink} 
             className="w-full h-[400px]"
