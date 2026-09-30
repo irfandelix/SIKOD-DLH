@@ -164,10 +164,9 @@ export async function getUploadSessionUrl(katimName: string, variabelName: strin
     const drive = getDriveService();
     const rootFolderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
     
-    // 1. Tahun
     const currentYear = new Date().getFullYear().toString();
     let yearFolderId = "";
-    const query = \'\' in parents and name='\' and mimeType='application/vnd.google-apps.folder' and trashed=false\;
+    const query = `'${rootFolderId}' in parents and name='${currentYear}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
     const res = await drive.files.list({ q: query, spaces: 'drive', fields: 'files(id, name)' });
     if (res.data.files && res.data.files.length > 0) {
       yearFolderId = res.data.files[0].id!;
@@ -179,10 +178,9 @@ export async function getUploadSessionUrl(katimName: string, variabelName: strin
       yearFolderId = folderRes.data.id!;
     }
 
-    // 2. Variabel
     let indicatorFolderId = "";
     const safeVariabelName = variabelName.replace(/['"]/g, '');
-    const indicatorQuery = \'\' in parents and name='\' and mimeType='application/vnd.google-apps.folder' and trashed=false\;
+    const indicatorQuery = `'${yearFolderId}' in parents and name='${safeVariabelName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
     const indicatorRes = await drive.files.list({ q: indicatorQuery, spaces: 'drive', fields: 'files(id, name)' });
     if (indicatorRes.data.files && indicatorRes.data.files.length > 0) {
       indicatorFolderId = indicatorRes.data.files[0].id!;
@@ -194,10 +192,9 @@ export async function getUploadSessionUrl(katimName: string, variabelName: strin
       indicatorFolderId = indicatorFolderRes.data.id!;
     }
 
-    // 3. Katim
     let katimFolderId = "";
     const safeKatimName = katimName.replace(/['"]/g, '');
-    const katimQuery = \'\' in parents and name='\' and mimeType='application/vnd.google-apps.folder' and trashed=false\;
+    const katimQuery = `'${indicatorFolderId}' in parents and name='${safeKatimName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
     const katimRes = await drive.files.list({ q: katimQuery, spaces: 'drive', fields: 'files(id, name)' });
     if (katimRes.data.files && katimRes.data.files.length > 0) {
       katimFolderId = katimRes.data.files[0].id!;
@@ -209,7 +206,6 @@ export async function getUploadSessionUrl(katimName: string, variabelName: strin
       katimFolderId = katimFolderRes.data.id!;
     }
 
-    // 4. Bikin Resumable Session
     const fileMetadata = { name: fileName, parents: [katimFolderId] };
     const auth = getAuthClient();
     const tokenRes = await auth.getAccessToken();
@@ -218,7 +214,7 @@ export async function getUploadSessionUrl(katimName: string, variabelName: strin
     const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable', {
       method: 'POST',
       headers: {
-        'Authorization': \Bearer \\,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
         'X-Upload-Content-Type': mimeType,
         'X-Upload-Content-Length': fileSize.toString()
@@ -228,7 +224,7 @@ export async function getUploadSessionUrl(katimName: string, variabelName: strin
 
     if (!response.ok) {
       const errText = await response.text();
-      throw new Error(\Failed to create upload session: \ - \\);
+      throw new Error(`Failed to create upload session: ${response.statusText} - ${errText}`);
     }
 
     const uploadUrl = response.headers.get('Location');
