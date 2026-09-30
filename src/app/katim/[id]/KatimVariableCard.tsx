@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Upload, Loader2, CheckCircle, Eye, Trash2, RefreshCw } from "lucide-react";
 import { getUploadSessionUrl, makeFilePublicAndGetLink, deleteFromGoogleDrive } from "@/app/actions/upload";
 import { db } from "@/lib/firebase/config";
@@ -37,9 +38,13 @@ interface KatimVariableCardProps {
 
 
 function ConfirmModal({ isOpen, title, message, onConfirm, onCancel, isDestructive = false }: any) {
-  if (!isOpen) return null;
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!isOpen || !mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl animate-in fade-in zoom-in duration-200">
         <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
         <p className="text-gray-500 text-sm mb-6">{message}</p>
@@ -58,7 +63,8 @@ function ConfirmModal({ isOpen, title, message, onConfirm, onCancel, isDestructi
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
