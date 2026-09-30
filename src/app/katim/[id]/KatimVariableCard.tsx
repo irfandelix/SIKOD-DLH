@@ -293,6 +293,22 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
           </div>
         </div>
       )}
+
+      <ConfirmModal 
+        isOpen={confirmState.isOpen}
+        title={confirmState.type === 'delete' ? "Hapus Dokumen?" : "Ganti Dokumen?"}
+        message={confirmState.type === 'delete' ? "Apakah Anda yakin ingin menghapus dokumen ini secara permanen?" : "Dokumen lama akan tertimpa dan tidak bisa dikembalikan. Yakin ingin menggantinya?"}
+        isDestructive={confirmState.type === 'delete'}
+        onCancel={() => setConfirmState({isOpen: false, type: null})}
+        onConfirm={() => {
+          setConfirmState({isOpen: false, type: null});
+          if (confirmState.type === 'delete') {
+            executeDelete();
+          } else if (confirmState.type === 'replace') {
+            fileInputRef.current?.click();
+          }
+        }}
+      />
     </div>
   );
 }
