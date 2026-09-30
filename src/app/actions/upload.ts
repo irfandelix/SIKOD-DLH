@@ -219,7 +219,7 @@ export async function getUploadSessionUrl(katimName: string, variabelName: strin
         'Content-Type': 'application/json',
         'X-Upload-Content-Type': mimeType,
         'X-Upload-Content-Length': fileSize.toString(),
-        'Origin': headers().get('origin') || 'https://sikoddlh.vercel.app'
+        'Origin': (await headers()).get('origin') || 'https://sikoddlh.vercel.app'
       },
       body: JSON.stringify(fileMetadata)
     });
