@@ -35,6 +35,33 @@ interface KatimVariableCardProps {
   indicator?: Indicator;
 }
 
+
+function ConfirmModal({ isOpen, title, message, onConfirm, onCancel, isDestructive = false }: any) {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      <div className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl animate-in fade-in zoom-in duration-200">
+        <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
+        <p className="text-gray-500 text-sm mb-6">{message}</p>
+        <div className="flex gap-3 justify-end">
+          <button 
+            onClick={onCancel}
+            className="px-4 py-2 rounded-xl text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
+          >
+            Batal
+          </button>
+          <button 
+            onClick={onConfirm}
+            className={`px-4 py-2 rounded-xl text-sm font-semibold text-white transition-colors ${isDestructive ? "bg-rose-600 hover:bg-rose-700" : "bg-orange-600 hover:bg-orange-700"}`}
+          >
+            Ya, Lanjutkan
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function KatimVariableCard({ katimName, tugas, index, indicator }: KatimVariableCardProps) {
   // Dapatkan array syarat dokumen dari Firestore
   let reqs: string[] = [];
@@ -99,6 +126,7 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
   const [isUploading, setIsUploading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [confirmState, setConfirmState] = useState<{isOpen: boolean, type: 'delete' | 'replace' | null}>({isOpen: false, type: null});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fileData = tugas.uploadedFiles?.[reqIndex];
@@ -166,9 +194,9 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
     }
   };
 
-  const handleDelete = async () => {
+  const executeDelete = async () => {
     if (!fileData) return;
-    if (!confirm("Apakah Anda yakin ingin menghapus dokumen ini?")) return;
+    
     
     setIsDeleting(true);
     try {
@@ -217,7 +245,7 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
                 <Eye className="w-4 h-4" />
               </button>
               <button 
-                onClick={() => fileInputRef.current?.click()}
+                onClick={() => setConfirmState({isOpen: true, type: 'replace'})}
                 disabled={isUploading || isDeleting}
                 className="p-2 bg-white border border-gray-200 text-amber-600 hover:bg-amber-50 hover:border-amber-200 rounded-xl transition-all shadow-sm"
                 title="Ganti"
@@ -225,7 +253,7 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
                 {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
               </button>
               <button 
-                onClick={handleDelete}
+                onClick={() => setConfirmState({isOpen: true, type: 'delete'})}
                 disabled={isUploading || isDeleting}
                 className="p-2 bg-white border border-gray-200 text-rose-600 hover:bg-rose-50 hover:border-rose-200 rounded-xl transition-all shadow-sm"
                 title="Hapus"
