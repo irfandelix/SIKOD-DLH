@@ -255,11 +255,11 @@ function EditorForm({ formData, setFormData, isSaving, onSave, onCancel, handleR
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+      <div className="flex flex-col gap-6 mb-6">
         {['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'].map(level => {
           const reqs = formData.levels[level] || [];
           return (
-            <div key={level} className="bg-white p-3 rounded-2xl border border-gray-200 shadow-sm">
+            <div key={level} className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
               <h4 className="font-bold text-xs text-gray-800 uppercase tracking-wider mb-3 pb-2 border-b border-gray-200">{level}</h4>
               <div className="space-y-2">
                 {reqs.map((r: string, i: number) => (
@@ -268,7 +268,7 @@ function EditorForm({ formData, setFormData, isSaving, onSave, onCancel, handleR
                       value={r}
                       onChange={(e) => handleRequirementChange(level, i, e.target.value)}
                       placeholder="Masukkan syarat dokumen..."
-                      className="border border-gray-300 rounded-2xl px-2 py-1 w-full text-xs text-gray-900 min-h-[60px] focus:ring-2 focus:ring-yellow-400 outline-none"
+                      className="border border-gray-300 rounded-2xl px-4 py-3 w-full text-sm text-gray-900 min-h-[80px] focus:ring-2 focus:ring-yellow-400 outline-none"
                     />
                     <button 
                       onClick={() => removeRequirement(level, i)}
