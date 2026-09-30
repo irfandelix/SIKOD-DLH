@@ -1,4 +1,5 @@
 "use server";
+import { headers } from "next/headers";
 
 import { getDriveService, getAuthClient } from '@/lib/google-drive';
 import { Readable } from 'stream';
@@ -217,7 +218,8 @@ export async function getUploadSessionUrl(katimName: string, variabelName: strin
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
         'X-Upload-Content-Type': mimeType,
-        'X-Upload-Content-Length': fileSize.toString()
+        'X-Upload-Content-Length': fileSize.toString(),
+        'Origin': headers().get('origin') || 'https://sikoddlh.vercel.app'
       },
       body: JSON.stringify(fileMetadata)
     });
