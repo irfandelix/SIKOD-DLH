@@ -104,7 +104,7 @@ export default function KatimProgressAccordion({ katim, tugasKatim, indicators }
                   </div>
                   
                   <h4 className="font-bold text-gray-800 text-base">{t.variabel}</h4>
-                  <p className="text-sm text-gray-500">{t.level}</p>
+                  
 
                   {/* Daftar file terunggah */}
                   <div className="mt-3 pt-3 border-t border-gray-100 flex flex-col gap-2">

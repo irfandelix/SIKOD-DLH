@@ -9,7 +9,6 @@ import { collection, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestor
 interface Tugas {
   id: string;
   variabel: string;
-  level: string;
   katimId: string;
   status: string;
 }
@@ -28,64 +27,36 @@ interface Indicator {
 
 export default function KatimAssignmentManager({ katim, allTugas, indicators }: { katim: Katim, allTugas: Tugas[], indicators: Indicator[] }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [assignments, setAssignments] = useState<Record<string, {checked: boolean, level: string}>>({});
+  const [assignments, setAssignments] = useState<Record<string, boolean>>({});
   const [isSaving, setIsSaving] = useState(false);
   
-  // Hitung jumlah yang sudah di-assign
   const existingTugas = allTugas.filter(t => t.katimId === katim.id);
   
   useEffect(() => {
-    // Sinkronisasi state lokal dengan data dari Firestore (allTugas)
-    const newAssignments: Record<string, {checked: boolean, level: string}> = {};
+    const newAssignments: Record<string, boolean> = {};
     indicators.forEach(ind => {
       const v = ind.name;
       const found = existingTugas.find(t => t.variabel === v);
-      if (found) {
-        newAssignments[v] = { checked: true, level: found.level };
-      } else {
-        newAssignments[v] = { checked: false, level: "Level 1" };
-      }
+      newAssignments[v] = !!found;
     });
     setAssignments(newAssignments);
   }, [allTugas, katim.id, indicators]);
 
   const handleSave = async (e: React.MouseEvent) => {
-    e.stopPropagation(); // Mencegah accordion tertutup saat menekan tombol simpan
+    e.stopPropagation();
     setIsSaving(true);
     try {
       for (const ind of indicators) {
         const v = ind.name;
-        const assignment = assignments[v];
+        const isChecked = assignments[v];
         const existing = existingTugas.find(t => t.variabel === v);
 
-        if (assignment?.checked) {
-          // Cek apakah level ini "tanpa dokumen"
-          let isTanpaDokumen = false;
-          if (ind.levels && ind.levels[assignment.level]) {
-            const reqs = ind.levels[assignment.level];
-            isTanpaDokumen = reqs.length === 1 && reqs[0].toLowerCase().includes("tanpa dokumen");
-          }
-          
-          const targetStatus = isTanpaDokumen ? "sudah" : "belum";
-
-          if (existing) {
-            if (existing.level !== assignment.level) {
-              // Jika level berubah, perbarui level dan statusnya
-              await updateDoc(doc(db, "assignments", existing.id), { 
-                level: assignment.level,
-                status: targetStatus,
-                uploadedFiles: {} // reset file jika level berubah
-              });
-            } else if (isTanpaDokumen && existing.status !== "sudah") {
-              // Jika level sama tapi ternyata itu tanpa dokumen dan status belum diubah
-              await updateDoc(doc(db, "assignments", existing.id), { status: "sudah" });
-            }
-          } else {
+        if (isChecked) {
+          if (!existing) {
             await addDoc(collection(db, "assignments"), {
               variabel: v,
               katimId: katim.id,
-              level: assignment.level,
-              status: targetStatus,
+              status: "belum",
               uploadedFiles: {}
             });
           }
@@ -106,7 +77,6 @@ export default function KatimAssignmentManager({ katim, allTugas, indicators }: 
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden mb-4 shadow-sm transition-all">
-      {/* Header Accordion */}
       <div 
         className="bg-gray-50 px-6 py-4 flex flex-col md:flex-row md:items-center justify-between cursor-pointer hover:bg-gray-100 transition-colors border-b border-gray-200"
         onClick={() => setIsOpen(!isOpen)}
@@ -127,7 +97,6 @@ export default function KatimAssignmentManager({ katim, allTugas, indicators }: 
           </div>
         </div>
         
-        {/* Tombol Simpan di Header agar cepat */}
         <div className="mt-4 md:mt-0 md:ml-4">
           <button 
             onClick={handleSave} 
@@ -140,52 +109,30 @@ export default function KatimAssignmentManager({ katim, allTugas, indicators }: 
         </div>
       </div>
 
-      {/* Konten (Checklist) */}
       {isOpen && (
         <div className="p-6 bg-white">
           <div className="space-y-3">
             {indicators.map((ind, i) => {
               const v = ind.name;
-              const isChecked = assignments[v]?.checked || false;
-              const level = assignments[v]?.level || "Level 1";
-              
+              const isChecked = assignments[v] || false;
               return (
                 <div key={i} className={`flex flex-col md:flex-row md:items-center justify-between p-4 rounded-xl border transition-colors ${isChecked ? 'bg-green-50 border-green-200 shadow-sm' : 'bg-transparent border-gray-200 hover:bg-gray-50'}`}>
                   <label className="flex items-start gap-3 cursor-pointer flex-1">
                     <input 
                       type="checkbox" 
+                      className="mt-1 w-5 h-5 text-green-600 rounded border-gray-300 focus:ring-green-500 cursor-pointer"
                       checked={isChecked}
                       onChange={(e) => {
                         setAssignments(prev => ({
                           ...prev,
-                          [v]: { ...prev[v], checked: e.target.checked }
+                          [v]: e.target.checked
                         }));
                       }}
-                      className="mt-1 w-5 h-5 text-green-600 rounded focus:ring-green-500 cursor-pointer border-gray-300"
                     />
-                    <span className={`text-sm font-medium ${isChecked ? 'text-gray-900' : 'text-gray-500'}`}>{v}</span>
-                  </label>
-                  
-                  {isChecked && (
-                    <div className="mt-3 md:mt-0 ml-8 md:ml-0 shrink-0">
-                      <select 
-                        value={level}
-                        onChange={(e) => {
-                          setAssignments(prev => ({
-                            ...prev,
-                            [v]: { ...prev[v], level: e.target.value }
-                          }));
-                        }}
-                        className="border-2 border-green-300 rounded-xl px-3 py-1.5 text-sm focus:ring-2 focus:ring-green-500 outline-none bg-white text-gray-900 font-bold cursor-pointer"
-                      >
-                        <option value="Level 1">Level 1</option>
-                        <option value="Level 2">Level 2</option>
-                        <option value="Level 3">Level 3</option>
-                        <option value="Level 4">Level 4</option>
-                        <option value="Level 5">Level 5</option>
-                      </select>
+                    <div>
+                      <span className="font-bold text-gray-900 block">{ind.order}. {v}</span>
                     </div>
-                  )}
+                  </label>
                 </div>
               );
             })}
