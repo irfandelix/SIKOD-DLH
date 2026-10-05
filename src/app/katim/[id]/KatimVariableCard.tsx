@@ -238,10 +238,10 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
   return (
     <div className="flex flex-col gap-4 p-5 bg-white/60 backdrop-blur-sm border border-gray-100 shadow-sm rounded-2xl transition-all hover:shadow-md hover:bg-white/80">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex-1 text-sm text-gray-700 leading-relaxed">
-          <span className="font-extrabold text-orange-600 mr-2 bg-orange-50 px-2 py-1 rounded-lg">{reqIndex + 1}</span> 
-          {reqText.replace(/^\d+\.\s*/, '')}
-        </div>
+        <div className="flex-1 flex items-start gap-3 text-sm text-gray-700 leading-relaxed">
+            <span className="shrink-0 font-extrabold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg shadow-sm">{reqIndex + 1}</span> 
+            <span className="pt-0.5">{reqText.replace(/^\d+\.\s*/, '')}</span>
+          </div>
         
         <div className="shrink-0 flex items-center gap-2 justify-end">
           {isSudah ? (
