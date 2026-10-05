@@ -30,7 +30,7 @@ export async function deleteFromGoogleDrive(fileId: string) {
   }
 }
 
-export async function getUploadSessionUrl(katimName: string, variabelName: string, levelName: string, fileName: string, mimeType: string, fileSize: number) {
+export async function getUploadSessionUrl(katimName: string, variabelName: string, levelName: string, reqNumber: number, fileName: string, mimeType: string, fileSize: number) {
   try {
     const drive = getDriveService();
     const rootFolderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
