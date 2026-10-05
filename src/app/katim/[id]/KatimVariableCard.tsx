@@ -235,7 +235,7 @@ function RequirementRow({ reqText, reqIndex, tugas, katimName, totalReqs }: { re
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex-1 text-sm text-gray-700 leading-relaxed">
           <span className="font-extrabold text-orange-600 mr-2 bg-orange-50 px-2 py-1 rounded-lg">{reqIndex + 1}</span> 
-          {reqText}
+          {reqText.replace(/^\d+\.\s*/, '')}
         </div>
         
         <div className="shrink-0 flex items-center gap-2 justify-end">
