@@ -97,6 +97,11 @@ export default function KatimVariableCard({ katimName, tugas, index, indicator }
           <h3 className="font-extrabold text-white text-lg leading-snug">
             {tugas.variabel}
           </h3>
+          {indicator?.descriptions?.[tugas.level] && (
+            <p className="mt-2 text-white/90 text-sm font-medium leading-relaxed">
+              {indicator.descriptions[tugas.level]}
+            </p>
+          )}
         </div>
       </div>
 
