@@ -27,6 +27,7 @@ export interface Indicator {
   name: string;
   order: number;
   levels: Record<string, string[]>;
+  descriptions?: Record<string, string>;
 }
 
 interface KatimVariableCardProps {
