@@ -77,15 +77,29 @@ export async function getUploadSessionUrl(katimName: string, variabelName: strin
       levelFolderId = levelFolderRes.data.id!;
     }
 
+    let syaratFolderId = "";
+    const syaratName = `Syarat ${reqNumber}`;
+    const syaratQuery = `'${levelFolderId}' in parents and name='${syaratName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+    const syaratRes = await drive.files.list({ q: syaratQuery, spaces: 'drive', fields: 'files(id, name)' });
+    if (syaratRes.data.files && syaratRes.data.files.length > 0) {
+      syaratFolderId = syaratRes.data.files[0].id!;
+    } else {
+      const syaratFolderRes = await drive.files.create({
+        requestBody: { name: syaratName, mimeType: 'application/vnd.google-apps.folder', parents: [levelFolderId] },
+        fields: 'id'
+      });
+      syaratFolderId = syaratFolderRes.data.id!;
+    }
+
     let katimFolderId = "";
     const safeKatimName = katimName.replace(/['"]/g, '');
-    const katimQuery = `'${levelFolderId}' in parents and name='${safeKatimName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+    const katimQuery = `'${syaratFolderId}' in parents and name='${safeKatimName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
     const katimRes = await drive.files.list({ q: katimQuery, spaces: 'drive', fields: 'files(id, name)' });
     if (katimRes.data.files && katimRes.data.files.length > 0) {
       katimFolderId = katimRes.data.files[0].id!;
     } else {
       const katimFolderRes = await drive.files.create({
-        requestBody: { name: safeKatimName, mimeType: 'application/vnd.google-apps.folder', parents: [levelFolderId] },
+        requestBody: { name: safeKatimName, mimeType: 'application/vnd.google-apps.folder', parents: [syaratFolderId] },
         fields: 'id'
       });
       katimFolderId = katimFolderRes.data.id!;
