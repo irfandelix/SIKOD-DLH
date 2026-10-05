@@ -89,7 +89,7 @@ function RequirementRow({ reqText, fileKey, tugas, katimName, totalReqs, level }
     setShowPreview(false);
 
     try {
-      const sessionResult = await getUploadSessionUrl(katimName, tugas.variabel, file.name, file.type, file.size);
+      const sessionResult = await getUploadSessionUrl(katimName, tugas.variabel, level, file.name, file.type, file.size);
       if (!sessionResult.success || !sessionResult.uploadUrl) {
         throw new Error(sessionResult.error || "Gagal mendapatkan sesi upload");
       }
