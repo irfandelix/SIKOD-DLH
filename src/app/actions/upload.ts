@@ -17,7 +17,6 @@ function getDriveService() {
   return google.drive({ version: 'v3', auth });
 }
 
-export { getAuthClient };
 
 export async function deleteFromGoogleDrive(fileId: string) {
   try {
