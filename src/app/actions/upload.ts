@@ -3,19 +3,9 @@
 import { google } from "googleapis";
 import { Readable } from "stream";
 import { headers } from "next/headers";
+import { getAuthClient, getDriveService } from "@/lib/google-drive";
 
-function getAuthClient() {
-  const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY || '{}');
-  return new google.auth.GoogleAuth({
-    credentials,
-    scopes: ['https://www.googleapis.com/auth/drive.file'],
-  });
-}
 
-function getDriveService() {
-  const auth = getAuthClient();
-  return google.drive({ version: 'v3', auth });
-}
 
 
 export async function deleteFromGoogleDrive(fileId: string) {
@@ -106,7 +96,8 @@ export async function getUploadSessionUrl(katimName: string, variabelName: strin
 
     const fileMetadata = { name: fileName, parents: [katimFolderId] };
     const auth = getAuthClient();
-    const token = await auth.getAccessToken();
+    const tokenRes = await auth.getAccessToken();
+    const token = tokenRes.token;
 
     const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable', {
       method: 'POST',
