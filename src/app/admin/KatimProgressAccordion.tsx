@@ -132,10 +132,20 @@ function FileRow({ idx, file }: { idx: string, file: UploadedFile }) {
   const [showPreview, setShowPreview] = useState(false);
   const previewLink = file.linkDrive ? file.linkDrive.replace(/\/view\?usp=.*/, '/preview') : '';
 
+  
+  let poinDisplay = "Poin -";
+  if (idx.includes("_")) {
+    const parts = idx.split("_");
+    poinDisplay = `${parts[0]} - Poin ${parseInt(parts[1]) + 1}`;
+  } else {
+    poinDisplay = `Poin ${parseInt(idx) + 1}`;
+  }
+
   return (
     <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 w-full flex flex-col gap-3">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <span className="text-xs text-gray-500 font-bold uppercase tracking-wider whitespace-nowrap">Poin {parseInt(idx) + 1}</span>
+        <span className="text-xs text-gray-500 font-bold uppercase tracking-wider whitespace-nowrap">{poinDisplay}</span>
+
         
         <div className="flex-1 flex items-center bg-white px-3 py-1.5 rounded-lg border border-gray-200 w-full mx-0 sm:mx-4">
           <input 

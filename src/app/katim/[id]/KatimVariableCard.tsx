@@ -68,25 +68,118 @@ function ConfirmModal({ isOpen, title, message, onConfirm, onCancel, isDestructi
   );
 }
 
-// Komponen Sub-Baris untuk setiap point (sekarang menerima fileKey string)
-function RequirementRow({ reqText, fileKey, tugas, katimName, totalReqs, level }: { reqText: string, fileKey: string, tugas: Tugas, katimName: string, totalReqs: number, level: string }) {
-  const [isUploading, setIsUploading] = useState(false);
+
+function UploadedFileItem({ fileData, fileKey, tugas, onDeleted }: any) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [confirmState, setConfirmState] = useState<{isOpen: boolean, type: 'delete' | 'replace' | null}>({isOpen: false, type: null});
+  const [confirmState, setConfirmState] = useState<{isOpen: boolean, type: 'delete' | null}>({isOpen: false, type: null});
+
+  const executeDelete = async () => {
+    setIsDeleting(true);
+    try {
+      const result = await deleteFromGoogleDrive(fileData.fileId);
+      if (result.success || result.error?.includes("File not found")) {
+        const updatedFiles = { ...(tugas.uploadedFiles || {}) };
+        delete updatedFiles[fileKey];
+        
+        await updateDoc(doc(db, "assignments", tugas.id), {
+          uploadedFiles: updatedFiles,
+          status: "belum"
+        });
+        setShowPreview(false);
+        toast.success("Dokumen berhasil dihapus!");
+        if (onDeleted) onDeleted();
+      } else {
+        toast.error("Gagal menghapus file: " + result.error);
+      }
+    } catch (error) {
+      toast.error("Terjadi kesalahan saat menghapus.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const previewLink = fileData?.linkDrive ? fileData.linkDrive.replace(/\/view\?usp=.*/, '/preview') : '';
+
+  return (
+    <div className="mt-3 pl-11 flex flex-col gap-2">
+      <div className="flex items-center gap-3 bg-white/50 border border-gray-100 p-2 rounded-xl shadow-sm">
+        <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-100/80 px-3 py-1.5 rounded-lg border border-emerald-200/50">
+          <CheckCircle className="w-3.5 h-3.5" /> Terunggah
+        </div>
+        
+        <div className="flex-1 min-w-0 flex items-center">
+          <input 
+            type="text" 
+            readOnly 
+            value={fileData.linkDrive} 
+            className="text-xs text-gray-500 bg-transparent w-full outline-none truncate"
+            onClick={(e) => e.currentTarget.select()}
+            title="Klik untuk menyalin"
+          />
+        </div>
+
+        <div className="flex gap-2 shrink-0">
+          <button 
+            onClick={() => setShowPreview(!showPreview)}
+            className={`p-1.5 rounded-lg transition-all shadow-sm ${showPreview ? 'bg-orange-600 text-white' : 'bg-white text-orange-600 hover:bg-orange-50 border border-gray-200'}`}
+            title="Lihat"
+          >
+            <Eye className="w-4 h-4" />
+          </button>
+          <button 
+            onClick={() => setConfirmState({isOpen: true, type: 'delete'})}
+            disabled={isDeleting}
+            className="p-1.5 bg-white border border-gray-200 text-rose-600 hover:bg-rose-50 hover:border-rose-200 rounded-lg transition-all shadow-sm"
+            title="Hapus"
+          >
+             {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+          </button>
+        </div>
+      </div>
+
+      {showPreview && (
+        <div className="mt-1 bg-gray-50 rounded-xl border border-gray-200 overflow-hidden shadow-inner">
+          <iframe 
+            src={previewLink} 
+            className="w-full h-[400px]"
+            allow="autoplay"
+          ></iframe>
+        </div>
+      )}
+
+      <ConfirmModal 
+        isOpen={confirmState.isOpen}
+        title="Hapus Dokumen?"
+        message="Apakah Anda yakin ingin menghapus dokumen ini secara permanen?"
+        isDestructive={true}
+        onCancel={() => setConfirmState({isOpen: false, type: null})}
+        onConfirm={() => {
+          setConfirmState({isOpen: false, type: null});
+          executeDelete();
+        }}
+      />
+    </div>
+  );
+}
+
+// Komponen Sub-Baris untuk setiap point (sekarang menerima fileKey string base)
+function RequirementRow({ reqText, fileKey, tugas, katimName, totalReqs, level }: { reqText: string, fileKey: string, tugas: Tugas, katimName: string, totalReqs: number, level: string }) {
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const fileData = tugas.uploadedFiles?.[fileKey];
-  const isSudah = !!fileData;
-
   const reqIndexNum = parseInt(fileKey.split('_')[1]) || 0;
+
+  // Cari semua file yang terkait dengan point ini (bisa banyak)
+  const uploadedFilesEntries = Object.entries(tugas.uploadedFiles || {}).filter(([key, _]) => 
+    key === fileKey || key.startsWith(fileKey + '_')
+  );
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setIsUploading(true);
-    setShowPreview(false);
 
     try {
       const sessionResult = await getUploadSessionUrl(katimName, tugas.variabel, level, reqIndexNum + 1, file.name, file.type, file.size);
@@ -117,13 +210,13 @@ function RequirementRow({ reqText, fileKey, tugas, katimName, totalReqs, level }
       }
 
       const updatedFiles = { ...(tugas.uploadedFiles || {}) };
-      updatedFiles[fileKey] = {
+      // Generate unique key for this file
+      const newFileKey = `${fileKey}_${Date.now()}`;
+      updatedFiles[newFileKey] = {
         linkDrive: publicResult.webViewLink,
         fileId: fileId
       };
 
-      // Untuk accordion multi-level, status 'sudah' mungkin sulit ditentukan secara global.
-      // Kita asumsikan tetap 'belum' sampai diverifikasi, atau kita bisa hilangkan auto-status.
       await updateDoc(doc(db, "assignments", tugas.id), {
         uploadedFiles: updatedFiles,
         status: "belum"
@@ -139,83 +232,23 @@ function RequirementRow({ reqText, fileKey, tugas, katimName, totalReqs, level }
     }
   };
 
-  const executeDelete = async () => {
-    if (!fileData) return;
-    
-    setIsDeleting(true);
-    try {
-      const result = await deleteFromGoogleDrive(fileData.fileId);
-      if (result.success || result.error?.includes("File not found")) {
-        const updatedFiles = { ...(tugas.uploadedFiles || {}) };
-        delete updatedFiles[fileKey];
-        
-        await updateDoc(doc(db, "assignments", tugas.id), {
-          uploadedFiles: updatedFiles,
-          status: "belum"
-        });
-        setShowPreview(false);
-        toast.success("Dokumen berhasil dihapus!");
-      } else {
-        toast.error("Gagal menghapus file: " + result.error);
-      }
-    } catch (error) {
-      toast.error("Terjadi kesalahan saat menghapus.");
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
-  const previewLink = fileData?.linkDrive ? fileData.linkDrive.replace(/\/view\?usp=.*/, '/preview') : '';
-
   return (
-    <div className="flex flex-col gap-4 p-5 bg-white/60 backdrop-blur-sm border border-gray-100 shadow-sm rounded-2xl transition-all hover:shadow-md hover:bg-white/80">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="flex flex-col p-5 bg-white/60 backdrop-blur-sm border border-gray-100 shadow-sm rounded-2xl transition-all hover:shadow-md hover:bg-white/80">
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div className="flex-1 flex items-start gap-3 text-sm text-gray-700 leading-relaxed">
           <span className="shrink-0 font-extrabold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg shadow-sm">{reqIndexNum + 1}</span> 
           <span className="pt-0.5">{reqText.replace(/^\d+\.\s*/, '')}</span>
         </div>
         
-        <div className="shrink-0 flex items-center gap-2 justify-end">
-          {isSudah ? (
-            <>
-              <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-100/80 px-3 py-1.5 rounded-xl shadow-sm border border-emerald-200/50">
-                <CheckCircle className="w-3.5 h-3.5" /> Terunggah
-              </div>
-              <button 
-                onClick={() => setShowPreview(!showPreview)}
-                className={`p-2 rounded-xl transition-all shadow-sm ${showPreview ? 'bg-orange-600 text-white shadow-orange-500/30' : 'bg-white text-orange-600 hover:bg-orange-50 border border-gray-200'}`}
-                title="Lihat"
-              >
-                <Eye className="w-4 h-4" />
-              </button>
-              <button 
-                onClick={() => setConfirmState({isOpen: true, type: 'replace'})}
-                disabled={isUploading || isDeleting}
-                className="p-2 bg-white border border-gray-200 text-amber-600 hover:bg-amber-50 hover:border-amber-200 rounded-xl transition-all shadow-sm"
-                title="Ganti"
-              >
-                {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-              </button>
-              <button 
-                onClick={() => setConfirmState({isOpen: true, type: 'delete'})}
-                disabled={isUploading || isDeleting}
-                className="p-2 bg-white border border-gray-200 text-rose-600 hover:bg-rose-50 hover:border-rose-200 rounded-xl transition-all shadow-sm"
-                title="Hapus"
-              >
-                 {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-              </button>
-            </>
-          ) : (
-            <button 
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              className="flex items-center gap-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 disabled:opacity-50 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-orange-500/20 transition-all hover:shadow-lg "
-            >
-              {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-              Unggah Dokumen
-            </button>
-          )}
-
+        <div className="shrink-0 flex items-start justify-end mt-1 md:mt-0">
+          <button 
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+            className="flex items-center gap-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 disabled:opacity-50 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-orange-500/20 transition-all hover:shadow-lg "
+          >
+            {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+            Tambah Dokumen
+          </button>
           <input 
             type="file" 
             className="hidden" 
@@ -226,33 +259,14 @@ function RequirementRow({ reqText, fileKey, tugas, katimName, totalReqs, level }
         </div>
       </div>
 
-      {showPreview && fileData && (
-        <div className="mt-2 pt-4 border-t border-gray-100">
-          <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden shadow-inner">
-            <iframe 
-              src={previewLink} 
-              className="w-full h-[500px]"
-              allow="autoplay"
-            ></iframe>
-          </div>
-        </div>
-      )}
-
-      <ConfirmModal 
-        isOpen={confirmState.isOpen}
-        title={confirmState.type === 'delete' ? "Hapus Dokumen?" : "Ganti Dokumen?"}
-        message={confirmState.type === 'delete' ? "Apakah Anda yakin ingin menghapus dokumen ini secara permanen?" : "Dokumen lama akan tertimpa dan tidak bisa dikembalikan. Yakin ingin menggantinya?"}
-        isDestructive={confirmState.type === 'delete'}
-        onCancel={() => setConfirmState({isOpen: false, type: null})}
-        onConfirm={() => {
-          setConfirmState({isOpen: false, type: null});
-          if (confirmState.type === 'delete') {
-            executeDelete();
-          } else if (confirmState.type === 'replace') {
-            fileInputRef.current?.click();
-          }
-        }}
-      />
+      {uploadedFilesEntries.map(([key, fileData]) => (
+        <UploadedFileItem 
+          key={key} 
+          fileKey={key} 
+          fileData={fileData} 
+          tugas={tugas} 
+        />
+      ))}
     </div>
   );
 }
