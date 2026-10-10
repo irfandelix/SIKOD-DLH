@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { Upload, Loader2, CheckCircle, Eye, Trash2, RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
 import { getUploadSessionUrl, makeFilePublicAndGetLink, deleteFromGoogleDrive } from "@/app/actions/upload";
 import { db } from "@/lib/firebase/config";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, deleteField } from "firebase/firestore";
 import toast from "react-hot-toast";
 
 interface UploadedFile {
@@ -79,11 +79,8 @@ function UploadedFileItem({ fileData, fileKey, tugas, onDeleted }: any) {
     try {
       const result = await deleteFromGoogleDrive(fileData.fileId);
       if (result.success || result.error?.includes("File not found")) {
-        const updatedFiles = { ...(tugas.uploadedFiles || {}) };
-        delete updatedFiles[fileKey];
-        
         await updateDoc(doc(db, "assignments", tugas.id), {
-          uploadedFiles: updatedFiles,
+          [`uploadedFiles.${fileKey}`]: deleteField(),
           status: "belum"
         });
         setShowPreview(false);
